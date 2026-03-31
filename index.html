@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>מנועי הכסף – הפודקאסט</title>
+  <meta name="description" content="מנועי הכסף – הפודקאסט של שי סלינס ואורי גרינפלד על כלכלה, שוקי הון ועתיד הכסף." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:      #c11e1e;
+      --red-dark: #8a1515;
+      --red-light: #e02828;
+      --black:  #0d0d0d;
+      --white:  #ffffff;
+      --gray:   #f5f5f5;
+      --text-muted: #555;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Assistant', 'Arial Hebrew', Arial, sans-serif;
+      background: var(--black);
+      color: var(--white);
+      direction: rtl;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed;
+      top: 0; right: 0; left: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 40px;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 2px solid var(--red);
+    }
+
+    .header-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .header-logo img {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .header-logo span {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.5px;
+    }
+
+    nav {
+      display: flex;
+      gap: 28px;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--red-light); }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+      background: radial-gradient(ellipse at 50% 0%, #3a0a0a 0%, var(--black) 70%);
+    }
+
+    /* animated gears background */
+    .hero::before, .hero::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      border: 18px solid rgba(192,42,42,0.12);
+      animation: spinGear 18s linear infinite;
+    }
+    .hero::before {
+      width: 420px; height: 420px;
+      top: -80px; left: -120px;
+    }
+    .hero::after {
+      width: 300px; height: 300px;
+      bottom: -60px; right: -80px;
+      animation-duration: 22s;
+      animation-direction: reverse;
+    }
+
+    @keyframes spinGear {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .hero-badge {
+      display: inline-block;
+      background: var(--red);
+      color: var(--white);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 5px 16px;
+      border-radius: 20px;
+      margin-bottom: 28px;
+    }
+
+    .hero-logo {
+      width: min(280px, 55vw);
+      height: auto;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(192,42,42,0.45), 0 0 0 4px rgba(192,42,42,0.3);
+      margin-bottom: 36px;
+      animation: floatLogo 4s ease-in-out infinite;
+    }
+
+    @keyframes floatLogo {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-10px); }
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      color: var(--white);
+      letter-spacing: -1px;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 span { color: var(--red-light); }
+
+    .hero p {
+      font-size: clamp(1rem, 2.2vw, 1.3rem);
+      color: #bbb;
+      max-width: 580px;
+      line-height: 1.7;
+      margin-bottom: 44px;
+    }
+
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 20px rgba(192,42,42,0.5);
+    }
+    .btn-primary:hover {
+      background: var(--red-light);
+      box-shadow: 0 6px 28px rgba(192,42,42,0.7);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 2px solid rgba(255,255,255,0.3);
+    }
+    .btn-outline:hover {
+      border-color: var(--red-light);
+      color: var(--red-light);
+      transform: translateY(-2px);
+    }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: var(--red-dark);
+      padding: 28px 24px;
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      flex-wrap: wrap;
+    }
+
+    .stat {
+      text-align: center;
+    }
+    .stat-num {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--white);
+    }
+    .stat-label {
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.7);
+      margin-top: 2px;
+    }
+
+    /* ── SECTION SHARED ── */
+    section {
+      padding: 90px 24px;
+    }
+
+    .section-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      color: var(--red-light);
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 1.05rem;
+      color: #999;
+      max-width: 600px;
+      line-height: 1.7;
+    }
+
+    /* ── ABOUT ── */
+    .about { background: #141414; }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      margin-top: 50px;
+    }
+
+    .about-text p {
+      color: #bbb;
+      font-size: 1.05rem;
+      line-height: 1.8;
+      margin-bottom: 18px;
+    }
+
+    .about-topics {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .topic-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      background: rgba(192,42,42,0.08);
+      border: 1px solid rgba(192,42,42,0.2);
+      border-radius: 12px;
+      padding: 18px 20px;
+      transition: background 0.2s;
+    }
+    .topic-item:hover { background: rgba(192,42,42,0.15); }
+
+    .topic-icon {
+      font-size: 1.6rem;
+      min-width: 36px;
+      text-align: center;
+    }
+
+    .topic-text h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .topic-text p {
+      font-size: 0.88rem;
+      color: #999;
+      line-height: 1.5;
+    }
+
+    /* ── HOSTS ── */
+    .hosts { background: var(--black); }
+
+    .hosts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .host-card {
+      background: #181818;
+      border: 1px solid #2a2a2a;
+      border-radius: 20px;
+      padding: 36px 32px;
+      text-align: center;
+      transition: all 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .host-card::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; left: 0;
+      height: 4px;
+      background: var(--red);
+    }
+
+    .host-card:hover {
+      border-color: var(--red);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(192,42,42,0.2);
+    }
+
+    .host-avatar {
+      width: 90px;
+      height: 90px;
+      border-radius: 50%;
+      background: var(--red-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: var(--white);
+      border: 3px solid var(--red);
+      overflow: hidden;
+    }
+
+    .host-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+    }
+
+    .host-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .host-role {
+      font-size: 0.85rem;
+      color: var(--red-light);
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+
+    .host-bio {
+      font-size: 0.92rem;
+      color: #999;
+      line-height: 1.7;
+    }
+
+    /* ── STUDIO PHOTO ── */
+    .studio-photo-wrap {
+      margin-bottom: 48px;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 2px solid #2a2a2a;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+    }
+    .studio-photo {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      max-height: 420px;
+    }
+
+    /* ── EPISODES ── */
+    .episodes { background: #141414; }
+
+    .episodes-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 50px;
+    }
+
+    .episode-card {
+      background: #1c1c1c;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 22px 26px;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      transition: all 0.25s;
+      text-decoration: none;
+      color: var(--white);
+    }
+    .episode-card:hover {
+      border-color: var(--red);
+      background: #222;
+      transform: translateX(-4px);
+    }
+
+    .episode-num {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--red-light);
+      background: rgba(193,30,30,0.12);
+      border: 1px solid rgba(193,30,30,0.25);
+      border-radius: 8px;
+      padding: 4px 10px;
+      white-space: nowrap;
+      min-width: 56px;
+      text-align: center;
+      margin-top: 3px;
+    }
+
+    .episode-body { flex: 1; }
+
+    .episode-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      line-height: 1.35;
+    }
+
+    .episode-desc {
+      font-size: 0.88rem;
+      color: #888;
+      line-height: 1.6;
+    }
+
+    .episode-play {
+      align-self: center;
+      font-size: 1.4rem;
+      opacity: 0.5;
+      transition: opacity 0.2s;
+    }
+    .episode-card:hover .episode-play { opacity: 1; }
+
+    /* ── PLATFORMS ── */
+    .platforms {
+      background: #0e0e0e;
+      text-align: center;
+    }
+
+    .platforms-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-top: 50px;
+    }
+
+    .platform-card {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      padding: 28px 20px;
+      text-decoration: none;
+      color: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.25s;
+    }
+
+    .platform-card:hover {
+      border-color: var(--red);
+      background: rgba(192,42,42,0.1);
+      transform: translateY(-3px);
+    }
+
+    .platform-icon {
+      font-size: 2.2rem;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .platform-icon svg {
+      width: 44px;
+      height: 44px;
+    }
+
+    .platform-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .platform-cta {
+      font-size: 0.78rem;
+      color: var(--red-light);
+      font-weight: 600;
+    }
+
+    /* ── SUBSCRIBE ── */
+    .subscribe {
+      background: linear-gradient(135deg, var(--red-dark) 0%, #1a0000 100%);
+      text-align: center;
+    }
+
+    .subscribe .section-title { color: var(--white); }
+    .subscribe .section-sub { color: rgba(255,255,255,0.75); margin: 0 auto 36px; }
+
+    .subscribe-form {
+      display: flex;
+      max-width: 480px;
+      margin: 0 auto;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .subscribe-form input {
+      flex: 1;
+      min-width: 220px;
+      padding: 14px 20px;
+      border-radius: 50px;
+      border: 2px solid rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.08);
+      color: var(--white);
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+      direction: rtl;
+    }
+    .subscribe-form input::placeholder { color: rgba(255,255,255,0.45); }
+    .subscribe-form input:focus { border-color: rgba(255,255,255,0.5); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #080808;
+      border-top: 1px solid #1e1e1e;
+      padding: 36px 24px;
+      text-align: center;
+      color: #555;
+      font-size: 0.88rem;
+    }
+
+    footer a { color: var(--red-light); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    .footer-logo {
+      width: 48px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      opacity: 0.8;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      width: 60px;
+      height: 4px;
+      background: var(--red);
+      border-radius: 2px;
+      margin: 16px 0 40px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 760px) {
+      header { padding: 12px 20px; }
+      nav { display: none; }
+
+      .about-grid,
+      .hosts-grid { grid-template-columns: 1fr; gap: 30px; }
+
+      .stats-bar { gap: 30px; }
+
+      .hero { padding: 100px 20px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="#" class="header-logo">
+      <img src="מנועי הכסף 2000-2000.jpg" alt="מנועי הכסף לוגו" />
+      <span>מנועי הכסף</span>
+    </a>
+    <nav>
+      <a href="#about">על הפודקאסט</a>
+      <a href="#hosts">המגישים</a>
+      <a href="#episodes">פרקים</a>
+      <a href="#platforms">האזינו</a>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">🎙️ פודקאסט כלכלי מבית כלכליסט</div>
+    <img
+      class="hero-logo"
+      src="מנועי הכסף 2000-2000.jpg"
+      alt="מנועי הכסף"
+    />
+    <h1>מנועי <span>הכסף</span></h1>
+    <p>
+      הפודקאסט הכלכלי המוביל מבית כלכליסט. שי סלינס ואורי גרינפלד מנתחים
+      את שוקי הון, כלכלה גלובלית ומה שמניע את הכסף —
+      בעברית, בגובה העיניים.
+    </p>
+    <div class="cta-group">
+      <a href="#platforms" class="btn btn-primary">
+        <span>🎧</span> האזינו עכשיו
+      </a>
+      <a href="#about" class="btn btn-outline">
+        <span>↓</span> קראו עוד
+      </a>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat">
+      <div class="stat-num">374</div>
+      <div class="stat-label">פרקים שבועיים</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">עשרות אלפי</div>
+      <div class="stat-label">האזנות לפרק</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">20+</div>
+      <div class="stat-label">שנות ניסיון כלכלי</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">כלכליסט</div>
+      <div class="stat-label">הבית של הפודקאסט</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="section-inner">
+      <div class="section-tag">על הפודקאסט</div>
+      <h2 class="section-title">מה מניע את הכסף שלך?</h2>
+      <div class="divider"></div>
+      <div class="about-grid">
+        <div class="about-text">
+          <p>
+            מנועי הכסף הוא הפודקאסט הכלכלי של כלכליסט — כבר 374 פרקים שבועיים,
+            עם עשרות אלפי האזנות לכל פרק.
+          </p>
+          <p>
+            שי ואורי מנתחים כל שבוע את האירועים הכלכליים הגדולים: מה קורה בשוקי
+            ההון בארץ ובעולם, למה הריבית עולה או יורדת, ואיך כל זה משפיע
+            על הכסף שלך.
+          </p>
+          <p>
+            ניתוחים עמוקים, שפה נגישה, בלי אג'נדה — רק כלכלה.
+          </p>
+          <a href="#platforms" class="btn btn-primary" style="margin-top: 12px;">
+            <span>🎧</span> התחל להאזין
+          </a>
+        </div>
+        <div class="about-topics">
+          <div class="topic-item">
+            <div class="topic-icon">📈</div>
+            <div class="topic-text">
+              <h4>שוקי הון</h4>
+              <p>ניתוח שבועי של מה שקורה בבורסות בארץ ובעולם</p>
+            </div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-icon">₿</div>
+            <div class="topic-text">
+              <h4>קריפטו ובלוקצ'יין</h4>
+              <p>הבנה מעמיקה של עולם המטבעות הדיגיטליים</p>
+            </div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-icon">🏦</div>
+            <div class="topic-text">
+              <h4>מאקרו וכלכלה גלובלית</h4>
+              <p>איך החלטות של בנקים מרכזיים משפיעות עליך</p>
+            </div>
+          </div>
+          <div class="topic-item">
+            <div class="topic-icon">💡</div>
+            <div class="topic-text">
+              <h4>אסטרטגיות השקעה</h4>
+              <p>כלים מעשיים לניהול תיק השקעות נכון</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOSTS -->
+  <section class="hosts" id="hosts">
+    <div class="section-inner">
+      <div class="section-tag">המגישים</div>
+      <h2 class="section-title">הפנים מאחורי הפודקאסט</h2>
+      <div class="divider"></div>
+
+      <div class="hosts-grid">
+        <div class="host-card">
+          <div class="host-avatar"><img src="Untitled.jpg" alt="שי סלינס" /></div>
+          <div class="host-name">שי סלינס</div>
+          <div class="host-role">סגן עורך אתר כלכליסט</div>
+          <p class="host-bio">
+            סגן עורך אתר כלכליסט בשש השנים האחרונות. עיתונאי כלכלי
+            בכיר עם הבנה עמוקה של שוקי ההון, הכלכלה הישראלית
+            ומה שמאחורי הכותרות.
+          </p>
+        </div>
+        <div class="host-card">
+          <div class="host-avatar"><img src="Untitled 3.jpg" alt="אורי גרינפלד" /></div>
+          <div class="host-name">אורי גרינפלד</div>
+          <div class="host-role">כלכלן ואסטרטג ראשי · אגם לידרים</div>
+          <p class="host-bio">
+            הכלכלן והאסטרטג הראשי של אגם לידרים. מעל 20 שנה של ניסיון
+            בכלכלה ובשוקי הון, לאחר שכיהן ככלכלן בכיר בשורה של
+            הגופים הפיננסיים הגדולים בישראל.
+          </p>
+        </div>
+      </div>
+
+      <div class="studio-photo-wrap" style="margin-top: 48px;">
+        <img
+          src="podcast_resized_image_2_2048x1152.png"
+          alt="שי סלינס ואורי גרינפלד באולפן"
+          class="studio-photo"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- EPISODES -->
+  <section class="episodes" id="episodes">
+    <div class="section-inner">
+      <div class="section-tag">פרקים אחרונים</div>
+      <h2 class="section-title">מה שמחכה לך</h2>
+      <div class="divider"></div>
+      <div class="episodes-grid" id="episodes-list">
+
+        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="episode-card">
+          <div class="episode-num" style="background:rgba(193,30,30,0.25); border-color:var(--red);">#374 🔴</div>
+          <div class="episode-body">
+            <div class="episode-title">מהנפט ועד הכלכלה הישראלית: ארבע קושיות כלכליות לפסח 2026</div>
+            <div class="episode-desc">רגע לפני פסח, שי סלינס ואורי גרינפלד מציגים את "ארבע הקושיות הכלכליות" לשנת 2026 — ניתוח מעמיק של השאלות שמעסיקות כל משקיע ישראלי בימים הסוערים האלה.</div>
+          </div>
+          <div class="episode-play">▶</div>
+        </a>
+
+        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="episode-card">
+          <div class="episode-num">#373</div>
+          <div class="episode-body">
+            <div class="episode-title">״אנחנו נמצאים בנקודה אסטרטגית יותר חמורה מזו שנכנסנו אליה״</div>
+            <div class="episode-desc">הפצצנו מתקני גרעין, חיסלנו מנהיג עליון, השמדנו תשתיות אנרגיה — ועדיין איראן לא נשברת. דני סיטרינוביץ', חוקר בכיר במכון למחקר ביטחון לאומי (INSS) עם 25 שנות ניסיון בחקר איראן, חושף מדוע.</div>
+          </div>
+          <div class="episode-play">▶</div>
+        </a>
+
+        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="episode-card">
+          <div class="episode-num">#372</div>
+          <div class="episode-body">
+            <div class="episode-title">שלושה תרחישים: לאן הולכת המלחמה ומה זה יעשה לכלכלה</div>
+            <div class="episode-desc">המזרח התיכון בוער. שי סלינס ואורי גרינפלד מנתחים את 3 התרחישים המרכזיים להמשך המלחמה — מהתעצמות שתחזיר את האינפלציה העולמית, דרך שגרת חירום, ועד לסיום מהיר שיכול להפיל את הבורסה בת"א.</div>
+          </div>
+          <div class="episode-play">▶</div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORMS -->
+  <section class="platforms" id="platforms">
+    <div class="section-inner">
+      <div class="section-tag">האזינו</div>
+      <h2 class="section-title">זמין בכל הפלטפורמות</h2>
+      <div class="divider" style="margin-left: auto; margin-right: auto;"></div>
+      <p class="section-sub" style="margin: 0 auto 0;">
+        בחרו את הפלטפורמה שמתאימה לכם והתחילו להאזין עכשיו
+      </p>
+      <div class="platforms-grid">
+        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="platform-card">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+          </div>
+          <div class="platform-name">Spotify</div>
+          <div class="platform-cta">האזן עכשיו ←</div>
+        </a>
+        <a href="https://podcasts.apple.com/il/podcast/%D7%9E%D7%A0%D7%95%D7%A2%D7%99-%D7%94%D7%9B%D7%A1%D7%A3/id1340384819" target="_blank" rel="noopener" class="platform-card">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="apple-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F452FF"/><stop offset="100%" style="stop-color:#832BC1"/></linearGradient></defs><rect width="24" height="24" rx="5.5" fill="url(#apple-grad)"/><path d="M12 2.4a5.16 5.16 0 0 1 5.16 5.16c0 1.37-.535 2.614-1.404 3.534.013.198.02.398.02.6C15.776 14.77 14.1 17.1 12 17.1s-3.776-2.33-3.776-5.406c0-.202.007-.402.02-.6A5.137 5.137 0 0 1 6.84 7.56 5.16 5.16 0 0 1 12 2.4zm0 2.16a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 1.44a1.56 1.56 0 1 1 0 3.12 1.56 1.56 0 0 1 0-3.12zm-.72 10.56h1.44v4.8h-1.44v-4.8z" fill="white"/></svg>
+          </div>
+          <div class="platform-name">Apple Podcasts</div>
+          <div class="platform-cta">האזן עכשיו ←</div>
+        </a>
+        <a href="https://www.youtube.com/@money_engines" target="_blank" rel="noopener" class="platform-card">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="#FF0000" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+          </div>
+          <div class="platform-name">YouTube</div>
+          <div class="platform-cta">צפה עכשיו ←</div>
+        </a>
+        <a href="https://t.me/moneyenginespodcast" target="_blank" rel="noopener" class="platform-card">
+          <div class="platform-icon">
+            <svg viewBox="0 0 24 24" fill="#2CA5E0" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          </div>
+          <div class="platform-name">Telegram</div>
+          <div class="platform-cta">הצטרף לקהילה ←</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <img src="מנועי הכסף 2000-2000.jpg" alt="מנועי הכסף" class="footer-logo" />
+    <p>
+      &copy; 2025 מנועי הכסף – שי סלינס ואורי גרינפלד | כלכליסט.
+      כל הזכויות שמורות.
+    </p>
+    <p style="margin-top: 8px;">
+      <a href="#">פרטיות</a> &nbsp;·&nbsp;
+      <a href="#">צרו קשר</a>
+    </p>
+  </footer>
+
+  <script>
+    function handleSubscribe(e) {
+      e.preventDefault();
+      const input = e.target.querySelector('input');
+      const btn   = e.target.querySelector('button');
+      btn.textContent = '✅ נרשמת בהצלחה!';
+      btn.style.background = '#1a8a4a';
+      input.value = '';
+      setTimeout(() => {
+        btn.innerHTML = '<span>🔔</span> הרשם';
+        btn.style.background = '';
+      }, 3500);
+    }
+
+    // Smooth active nav on scroll
+    const sections = document.querySelectorAll('section[id], div[id]');
+    const navLinks  = document.querySelectorAll('nav a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(sec => {
+        if (window.scrollY >= sec.offsetTop - 120) current = sec.id;
+      });
+      navLinks.forEach(a => {
+        a.style.color = a.getAttribute('href') === '#' + current ? '#e03333' : '';
+      });
+    });
+  </script>
+</body>
+</html>
