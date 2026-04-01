@@ -588,6 +588,38 @@
       opacity: 0.8;
     }
 
+    /* ── EPISODE LOADING / DATE ── */
+    .ep-loading {
+      text-align: center;
+      padding: 60px 20px;
+      color: #888;
+      font-size: 1rem;
+    }
+    .ep-spinner {
+      display: block;
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(192,42,42,0.25);
+      border-top-color: var(--red);
+      border-radius: 50%;
+      margin: 20px auto 0;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .episode-date {
+      font-size: 0.76rem;
+      color: #666;
+      margin-top: 6px;
+    }
+
+    .episodes-count {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: -30px;
+      margin-bottom: 30px;
+    }
+
     /* ── DIVIDER ── */
     .divider {
       width: 60px;
@@ -772,38 +804,14 @@
   <!-- EPISODES -->
   <section class="episodes" id="episodes">
     <div class="section-inner">
-      <div class="section-tag">פרקים אחרונים</div>
-      <h2 class="section-title">מה שמחכה לך</h2>
+      <div class="section-tag">ארכיון פרקים</div>
+      <h2 class="section-title">100 הפרקים האחרונים</h2>
       <div class="divider"></div>
       <div class="episodes-grid" id="episodes-list">
-
-        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="episode-card">
-          <div class="episode-num" style="background:rgba(193,30,30,0.25); border-color:var(--red);">#374 🔴</div>
-          <div class="episode-body">
-            <div class="episode-title">מהנפט ועד הכלכלה הישראלית: ארבע קושיות כלכליות לפסח 2026</div>
-            <div class="episode-desc">רגע לפני פסח, שי סלינס ואורי גרינפלד מציגים את "ארבע הקושיות הכלכליות" לשנת 2026 — ניתוח מעמיק של השאלות שמעסיקות כל משקיע ישראלי בימים הסוערים האלה.</div>
-          </div>
-          <div class="episode-play">▶</div>
-        </a>
-
-        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="episode-card">
-          <div class="episode-num">#373</div>
-          <div class="episode-body">
-            <div class="episode-title">״אנחנו נמצאים בנקודה אסטרטגית יותר חמורה מזו שנכנסנו אליה״</div>
-            <div class="episode-desc">הפצצנו מתקני גרעין, חיסלנו מנהיג עליון, השמדנו תשתיות אנרגיה — ועדיין איראן לא נשברת. דני סיטרינוביץ', חוקר בכיר במכון למחקר ביטחון לאומי (INSS) עם 25 שנות ניסיון בחקר איראן, חושף מדוע.</div>
-          </div>
-          <div class="episode-play">▶</div>
-        </a>
-
-        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="episode-card">
-          <div class="episode-num">#372</div>
-          <div class="episode-body">
-            <div class="episode-title">שלושה תרחישים: לאן הולכת המלחמה ומה זה יעשה לכלכלה</div>
-            <div class="episode-desc">המזרח התיכון בוער. שי סלינס ואורי גרינפלד מנתחים את 3 התרחישים המרכזיים להמשך המלחמה — מהתעצמות שתחזיר את האינפלציה העולמית, דרך שגרת חירום, ועד לסיום מהיר שיכול להפיל את הבורסה בת"א.</div>
-          </div>
-          <div class="episode-play">▶</div>
-        </a>
-
+        <div class="ep-loading">
+          טוען פרקים...
+          <span class="ep-spinner"></span>
+        </div>
       </div>
     </div>
   </section>
@@ -864,23 +872,127 @@
   </footer>
 
   <script>
-    function handleSubscribe(e) {
-      e.preventDefault();
-      const input = e.target.querySelector('input');
-      const btn   = e.target.querySelector('button');
-      btn.textContent = '✅ נרשמת בהצלחה!';
-      btn.style.background = '#1a8a4a';
-      input.value = '';
-      setTimeout(() => {
-        btn.innerHTML = '<span>🔔</span> הרשם';
-        btn.style.background = '';
-      }, 3500);
+    /* ── RSS EPISODE LOADER ── */
+    const RSS_URL  = 'https://www.omnycontent.com/d/playlist/178d72a7-a889-4132-8008-a5cc014ed109/c39a4cf6-7e84-43fa-bfa4-b31b00e05cfc/8a5aa674-a749-43c7-86c3-b31b00e06274/podcast.rss';
+    const PROXIES  = [
+      url => 'https://corsproxy.io/?' + encodeURIComponent(url),
+      url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
+    ];
+
+    function stripHtml(html) {
+      const d = document.createElement('div');
+      d.innerHTML = html;
+      return d.textContent || '';
     }
 
-    // Smooth active nav on scroll
+    function formatDate(str) {
+      if (!str) return '';
+      const d = new Date(str);
+      if (isNaN(d)) return '';
+      return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
+    }
+
+    function parseAndRender(xmlText, existingItems = []) {
+      const parser = new DOMParser();
+      const xml    = parser.parseFromString(xmlText, 'text/xml');
+      const raw    = Array.from(xml.querySelectorAll('item'));
+      return [...existingItems, ...raw];
+    }
+
+    function renderEpisodes(items) {
+      const list = document.getElementById('episodes-list');
+      if (!items.length) {
+        list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
+        return;
+      }
+
+      list.innerHTML = items.map((item, i) => {
+        const ns      = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
+        const title   = item.querySelector('title')?.textContent?.trim() || '';
+        const rawDesc = item.querySelector('description')?.textContent || '';
+        const desc    = stripHtml(rawDesc).trim().substring(0, 220);
+        const pubDate = item.querySelector('pubDate')?.textContent || '';
+        const encUrl  = item.querySelector('enclosure')?.getAttribute('url') || '';
+        const link    = item.querySelector('link')?.textContent?.trim() || encUrl || '#';
+
+        // episode number: try itunes:episode, then extract from title
+        let epNum = item.getElementsByTagNameNS(ns, 'episode')[0]?.textContent?.trim();
+        if (!epNum) {
+          const m = title.match(/\b(\d{2,3})\b/);
+          epNum = m ? m[1] : (items.length - i);
+        }
+
+        const isLatest   = i === 0;
+        const numStyle   = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
+        const latestBadge = isLatest ? ' 🔴' : '';
+        const dateStr    = formatDate(pubDate);
+
+        // prefer direct spotify/apple link; fallback to audio url
+        const href = encUrl || link;
+
+        return `
+          <a href="${href}" target="_blank" rel="noopener" class="episode-card">
+            <div class="episode-num" style="${numStyle}">#${epNum}${latestBadge}</div>
+            <div class="episode-body">
+              <div class="episode-title">${title}</div>
+              <div class="episode-desc">${desc}${desc.length >= 220 ? '...' : ''}</div>
+              ${dateStr ? `<div class="episode-date">${dateStr}</div>` : ''}
+            </div>
+            <div class="episode-play">▶</div>
+          </a>`;
+      }).join('');
+    }
+
+    async function fetchWithProxy(proxyFn, url) {
+      const res = await fetch(proxyFn(url), { headers: { 'Accept': 'application/rss+xml, text/xml, */*' } });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.text();
+    }
+
+    async function loadPage(pageNum, proxyFn) {
+      const url = RSS_URL + (pageNum > 1 ? '?page=' + pageNum : '');
+      return fetchWithProxy(proxyFn, url);
+    }
+
+    async function loadEpisodes() {
+      const list = document.getElementById('episodes-list');
+      let workingProxy = null;
+
+      // find a working proxy
+      for (const proxyFn of PROXIES) {
+        try {
+          await fetchWithProxy(proxyFn, RSS_URL);
+          workingProxy = proxyFn;
+          break;
+        } catch (_) { /* try next */ }
+      }
+
+      if (!workingProxy) {
+        list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
+        return;
+      }
+
+      // fetch pages 1 and 2 in parallel to get ~100 episodes
+      try {
+        const [page1, page2] = await Promise.all([
+          loadPage(1, workingProxy),
+          loadPage(2, workingProxy).catch(() => null),
+        ]);
+
+        let items = parseAndRender(page1);
+        if (page2) items = parseAndRender(page2, items);
+
+        renderEpisodes(items.slice(0, 100));
+      } catch (e) {
+        list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
+      }
+    }
+
+    loadEpisodes();
+
+    /* ── ACTIVE NAV ON SCROLL ── */
     const sections = document.querySelectorAll('section[id], div[id]');
     const navLinks  = document.querySelectorAll('nav a');
-
     window.addEventListener('scroll', () => {
       let current = '';
       sections.forEach(sec => {
