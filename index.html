@@ -475,6 +475,66 @@
     }
     .episode-card:hover .episode-play { opacity: 1; }
 
+    /* ── PAGINATION ── */
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid #2a2a2a;
+      background: #1c1c1c;
+      color: #aaa;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .page-btn:hover {
+      border-color: var(--red);
+      color: var(--white);
+      background: rgba(192,42,42,0.15);
+    }
+
+    .page-btn.active {
+      background: var(--red);
+      border-color: var(--red);
+      color: var(--white);
+      box-shadow: 0 4px 14px rgba(192,42,42,0.45);
+    }
+
+    .page-btn.nav-btn {
+      width: auto;
+      padding: 0 16px;
+      gap: 6px;
+      font-size: 0.85rem;
+    }
+
+    .page-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    .page-info {
+      font-size: 0.82rem;
+      color: #666;
+      margin-top: 14px;
+      text-align: center;
+    }
+
     /* ── PLATFORMS ── */
     .platforms {
       background: #0e0e0e;
@@ -813,6 +873,8 @@
           <span class="ep-spinner"></span>
         </div>
       </div>
+      <div class="pagination" id="pagination" style="display:none"></div>
+      <div class="page-info" id="page-info"></div>
     </div>
   </section>
 
@@ -874,7 +936,11 @@
   <script>
     /* ── EPISODE LOADER — Apple Podcasts API (no CORS issues) ── */
     const PODCAST_ID  = '1340384819';
-    const LATEST_EP   = 374; // update this when episode count grows
+    const LATEST_EP   = 374;
+    const PER_PAGE    = 10;
+
+    let allEpisodes = [];
+    let currentPage = 1;
 
     function formatDate(str) {
       if (!str) return '';
@@ -884,26 +950,28 @@
     }
 
     function extractEpNum(title) {
-      // match patterns like "פרק 372" or " 372 " or "| 372"
       const m = title.match(/פרק\s+(\d{2,3})/) || title.match(/[|#\s](\d{3})\b/);
       return m ? m[1] : null;
     }
 
-    function renderEpisodes(episodes) {
-      const list = document.getElementById('episodes-list');
+    function renderPage(page) {
+      const list     = document.getElementById('episodes-list');
+      const pagEl    = document.getElementById('pagination');
+      const infoEl   = document.getElementById('page-info');
+      const start    = (page - 1) * PER_PAGE;
+      const slice    = allEpisodes.slice(start, start + PER_PAGE);
+      const total    = allEpisodes.length;
+      const totalPages = Math.ceil(total / PER_PAGE);
 
-      if (!episodes.length) {
-        list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
-        return;
-      }
-
-      list.innerHTML = episodes.map((ep, i) => {
+      // render cards
+      list.innerHTML = slice.map((ep, i) => {
+        const globalIdx = start + i;
         const title    = ep.trackName || '';
         const desc     = (ep.description || ep.shortDescription || '').trim().substring(0, 220);
         const dateStr  = formatDate(ep.releaseDate);
         const href     = ep.trackViewUrl || ep.episodeUrl || '#';
-        const epNum    = extractEpNum(title) || (LATEST_EP - i);
-        const isLatest = i === 0;
+        const epNum    = extractEpNum(title) || (LATEST_EP - globalIdx);
+        const isLatest = globalIdx === 0;
         const numStyle = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
 
         return `
@@ -917,6 +985,48 @@
             <div class="episode-play">▶</div>
           </a>`;
       }).join('');
+
+      // render pagination
+      pagEl.style.display = 'flex';
+      const pages = [];
+
+      // prev button
+      pages.push(`<button class="page-btn nav-btn" onclick="goToPage(${page - 1})" ${page === 1 ? 'disabled' : ''}>→ הקודם</button>`);
+
+      // page numbers — show max 5 around current
+      const delta = 2;
+      const rangeStart = Math.max(1, page - delta);
+      const rangeEnd   = Math.min(totalPages, page + delta);
+
+      if (rangeStart > 1) {
+        pages.push(`<button class="page-btn" onclick="goToPage(1)">1</button>`);
+        if (rangeStart > 2) pages.push(`<span style="color:#555;align-self:center">…</span>`);
+      }
+
+      for (let p = rangeStart; p <= rangeEnd; p++) {
+        pages.push(`<button class="page-btn ${p === page ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`);
+      }
+
+      if (rangeEnd < totalPages) {
+        if (rangeEnd < totalPages - 1) pages.push(`<span style="color:#555;align-self:center">…</span>`);
+        pages.push(`<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`);
+      }
+
+      // next button
+      pages.push(`<button class="page-btn nav-btn" onclick="goToPage(${page + 1})" ${page === totalPages ? 'disabled' : ''}>הבא ←</button>`);
+
+      pagEl.innerHTML = pages.join('');
+
+      // info line
+      infoEl.textContent = `עמוד ${page} מתוך ${totalPages} · סה"כ ${total} פרקים`;
+    }
+
+    function goToPage(page) {
+      const totalPages = Math.ceil(allEpisodes.length / PER_PAGE);
+      if (page < 1 || page > totalPages) return;
+      currentPage = page;
+      renderPage(currentPage);
+      document.getElementById('episodes').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     async function loadEpisodes() {
@@ -927,9 +1037,9 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
 
-        // first result is the podcast itself — skip it
-        const episodes = data.results.filter(r => r.wrapperType === 'podcastEpisode');
-        renderEpisodes(episodes);
+        allEpisodes = data.results.filter(r => r.wrapperType === 'podcastEpisode');
+        if (!allEpisodes.length) throw new Error('no episodes');
+        renderPage(1);
       } catch (e) {
         list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
       }
