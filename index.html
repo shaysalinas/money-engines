@@ -3,8 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>מנועי הכסף – הפודקאסט</title>
-  <meta name="description" content="מנועי הכסף – הפודקאסט של שי סלינס ואורי גרינפלד על כלכלה, שוקי הון ועתיד הכסף." />
+  <title>מנועי הכסף – פודקאסט כלכלי ישראלי | שוקי הון בעברית | שי סלינס ואורי גרינפלד</title>
+  <meta name="description" content="מנועי הכסף – הפודקאסט הכלכלי המוביל מבית כלכליסט. שי סלינס ואורי גרינפלד מנתחים שוקי הון, כלכלה גלובלית ומה שמניע את הכסף – בעברית, בגובה העיניים. מעל 370 פרקים שבועיים." />
+
+  <!-- Open Graph / Social sharing -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://money-engines.netlify.app/" />
+  <meta property="og:title"       content="מנועי הכסף – הפודקאסט הכלכלי הישראלי המוביל" />
+  <meta property="og:description" content="שי סלינס ואורי גרינפלד מנתחים שוקי הון, כלכלה גלובלית ומה שמניע את הכסף – בעברית, בגובה העיניים. מבית כלכליסט." />
+  <meta property="og:image"       content="מנועי הכסף 2000-2000.jpg" />
+  <meta property="og:locale"      content="he_IL" />
+  <meta property="og:site_name"   content="מנועי הכסף" />
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card"        content="summary_large_image" />
+  <meta name="twitter:title"       content="מנועי הכסף – הפודקאסט הכלכלי הישראלי המוביל" />
+  <meta name="twitter:description" content="שי סלינס ואורי גרינפלד מנתחים שוקי הון, כלכלה גלובלית ומה שמניע את הכסף – בעברית, בגובה העיניים." />
+  <meta name="twitter:image"       content="מנועי הכסף 2000-2000.jpg" />
+
+  <!-- Schema.org – PodcastSeries -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "PodcastSeries",
+    "name": "מנועי הכסף",
+    "description": "הפודקאסט הכלכלי המוביל מבית כלכליסט. שי סלינס ואורי גרינפלד מנתחים שוקי הון, כלכלה גלובלית ומה שמניע את הכסף.",
+    "url": "https://money-engines.netlify.app/",
+    "image": "מנועי הכסף 2000-2000.jpg",
+    "inLanguage": "he",
+    "author": [
+      { "@type": "Person", "name": "שי סלינס",   "jobTitle": "סגן עורך אתר כלכליסט" },
+      { "@type": "Person", "name": "אורי גרינפלד","jobTitle": "כלכלן ואסטרטג ראשי, אגם לידרים" }
+    ],
+    "publisher": { "@type": "Organization", "name": "כלכליסט", "url": "https://www.calcalist.co.il" },
+    "webFeed": "https://www.omnycontent.com/d/playlist/178d72a7-a889-4132-8008-a5cc014ed109/c39a4cf6-7e84-43fa-bfa4-b31b00e05cfc/8a5aa674-a749-43c7-86c3-b31b00e06274/podcast.rss"
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet" />
@@ -689,6 +723,95 @@
       margin: 16px 0 40px;
     }
 
+    /* ── RANKING STRIP ── */
+    .ranking-strip {
+      background: #0f0f0f;
+      border-top: 1px solid #1e1e1e;
+      border-bottom: 1px solid #1e1e1e;
+      padding: 22px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .ranking-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .ranking-text {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--white);
+      line-height: 1.5;
+      max-width: 680px;
+    }
+
+    .ranking-sub {
+      font-size: 0.8rem;
+      color: #666;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── PRIVACY MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-box {
+      background: #161616;
+      border: 1px solid #2a2a2a;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      padding: 36px 32px;
+      position: relative;
+      text-align: right;
+      direction: rtl;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: none;
+      border: none;
+      color: #888;
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .modal-close:hover { color: var(--white); }
+
+    .modal-box h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+
+    .modal-box p {
+      font-size: 0.9rem;
+      color: #aaa;
+      line-height: 1.8;
+      margin-bottom: 14px;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 760px) {
       header { padding: 12px 20px; }
@@ -700,6 +823,18 @@
       .stats-bar { gap: 30px; }
 
       .hero { padding: 100px 20px 60px; }
+
+      .hero-logo { width: min(220px, 70vw); }
+
+      .host-avatar { width: 80px; height: 80px; }
+
+      .pagination { gap: 5px; }
+      .page-btn { width: 34px; height: 34px; font-size: 0.8rem; }
+      .page-btn.nav-btn { padding: 0 10px; font-size: 0.78rem; }
+
+      .ranking-text { font-size: 0.9rem; }
+
+      .modal-box { padding: 28px 20px; }
     }
   </style>
 </head>
@@ -737,9 +872,6 @@
       <a href="#platforms" class="btn btn-primary">
         <span>🎧</span> האזינו עכשיו
       </a>
-      <a href="#about" class="btn btn-outline">
-        <span>↓</span> קראו עוד
-      </a>
     </div>
   </section>
 
@@ -754,13 +886,26 @@
       <div class="stat-label">האזנות לפרק</div>
     </div>
     <div class="stat">
-      <div class="stat-num">20+</div>
-      <div class="stat-label">שנות ניסיון כלכלי</div>
+      <div class="stat-num">מאז 2018</div>
+      <div class="stat-label">פודקאסט ותיק ומוביל</div>
     </div>
     <div class="stat">
-      <div class="stat-num">כלכליסט</div>
-      <div class="stat-label">הבית של הפודקאסט</div>
+      <a href="https://www.calcalist.co.il/market/category/5357" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
+        <div class="stat-num">כלכליסט</div>
+        <div class="stat-label">לאתר הפודקאסט ←</div>
+      </a>
     </div>
+  </div>
+
+  <!-- RANKING STRIP -->
+  <div class="ranking-strip">
+    <div class="ranking-inner">
+      <svg width="28" height="28" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0"><defs><linearGradient id="ap-g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F452FF"/><stop offset="100%" style="stop-color:#832BC1"/></linearGradient></defs><rect width="24" height="24" rx="5.5" fill="url(#ap-g)"/><circle cx="12" cy="9" r="3.2" fill="none" stroke="white" stroke-width="1.6"/><line x1="12" y1="13" x2="12" y2="18.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/><line x1="9" y1="18.5" x2="15" y2="18.5" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+      <div class="ranking-text">
+        ״הפודקאסט הכלכלי הישראלי שמדורג מס׳ 1 בעסקים ובין 20 המובילים בדירוג הכללי — בכל שבוע שיוצא פרק חדש״
+      </div>
+    </div>
+    <div class="ranking-sub">Apple Podcasts ישראל</div>
   </div>
 
   <!-- ABOUT -->
@@ -924,14 +1069,30 @@
   <footer>
     <img src="מנועי הכסף 2000-2000.jpg" alt="מנועי הכסף" class="footer-logo" />
     <p>
-      &copy; 2025 מנועי הכסף – שי סלינס ואורי גרינפלד | כלכליסט.
+      &copy; 2026 מנועי הכסף – שי סלינס ואורי גרינפלד |
+      <a href="https://www.calcalist.co.il/market/category/5357" target="_blank" rel="noopener">כלכליסט</a>.
       כל הזכויות שמורות.
     </p>
     <p style="margin-top: 8px;">
-      <a href="#">פרטיות</a> &nbsp;·&nbsp;
-      <a href="#">צרו קשר</a>
+      <a href="#" onclick="document.getElementById('privacy-modal').classList.add('open');return false;">מדיניות פרטיות</a>
+      &nbsp;·&nbsp;
+      <a href="mailto:shay.salinas@calcalist.co.il">צרו קשר</a>
     </p>
   </footer>
+
+  <!-- PRIVACY MODAL -->
+  <div class="modal-overlay" id="privacy-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box">
+      <button class="modal-close" onclick="document.getElementById('privacy-modal').classList.remove('open')">✕</button>
+      <h3>מדיניות פרטיות</h3>
+      <p>עמוד נחיתה זה של פודקאסט "מנועי הכסף" אינו אוסף מידע אישי מזהה על המבקרים בו.</p>
+      <p><strong>קישורים חיצוניים:</strong> העמוד מכיל קישורים לפלטפורמות האזנה חיצוניות (Spotify, Apple Podcasts, YouTube, Telegram). לחיצה עליהם מעבירה אתכם לאתרים של אותן פלטפורמות, הכפופים למדיניות הפרטיות שלהן.</p>
+      <p><strong>נתוני שימוש:</strong> ייתכן שספק האחסון (Netlify) אוסף נתוני גישה סטנדרטיים כגון כתובות IP, סוג הדפדפן ועמודים שנצפו, לצורכי תפעול ואבטחה בלבד.</p>
+      <p><strong>עוגיות (Cookies):</strong> אין שימוש בעוגיות מעקב או שיווקיות בעמוד זה.</p>
+      <p><strong>יצירת קשר:</strong> לכל שאלה בנוגע לפרטיות ניתן לפנות אל <a href="mailto:shay.salinas@calcalist.co.il" style="color:var(--red-light)">shay.salinas@calcalist.co.il</a>.</p>
+      <p style="color:#555; font-size:0.8rem;">עדכון אחרון: אפריל 2026</p>
+    </div>
+  </div>
 
   <script>
     /* ── EPISODE LOADER — Apple Podcasts API (no CORS issues) ── */
