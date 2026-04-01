@@ -872,18 +872,9 @@
   </footer>
 
   <script>
-    /* ── RSS EPISODE LOADER ── */
-    const RSS_URL  = 'https://www.omnycontent.com/d/playlist/178d72a7-a889-4132-8008-a5cc014ed109/c39a4cf6-7e84-43fa-bfa4-b31b00e05cfc/8a5aa674-a749-43c7-86c3-b31b00e06274/podcast.rss';
-    const PROXIES  = [
-      url => 'https://corsproxy.io/?' + encodeURIComponent(url),
-      url => 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url),
-    ];
-
-    function stripHtml(html) {
-      const d = document.createElement('div');
-      d.innerHTML = html;
-      return d.textContent || '';
-    }
+    /* ── EPISODE LOADER — Apple Podcasts API (no CORS issues) ── */
+    const PODCAST_ID  = '1340384819';
+    const LATEST_EP   = 374; // update this when episode count grows
 
     function formatDate(str) {
       if (!str) return '';
@@ -892,47 +883,32 @@
       return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    function parseAndRender(xmlText, existingItems = []) {
-      const parser = new DOMParser();
-      const xml    = parser.parseFromString(xmlText, 'text/xml');
-      const raw    = Array.from(xml.querySelectorAll('item'));
-      return [...existingItems, ...raw];
+    function extractEpNum(title) {
+      // match patterns like "פרק 372" or " 372 " or "| 372"
+      const m = title.match(/פרק\s+(\d{2,3})/) || title.match(/[|#\s](\d{3})\b/);
+      return m ? m[1] : null;
     }
 
-    function renderEpisodes(items) {
+    function renderEpisodes(episodes) {
       const list = document.getElementById('episodes-list');
-      if (!items.length) {
+
+      if (!episodes.length) {
         list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
         return;
       }
 
-      list.innerHTML = items.map((item, i) => {
-        const ns      = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
-        const title   = item.querySelector('title')?.textContent?.trim() || '';
-        const rawDesc = item.querySelector('description')?.textContent || '';
-        const desc    = stripHtml(rawDesc).trim().substring(0, 220);
-        const pubDate = item.querySelector('pubDate')?.textContent || '';
-        const encUrl  = item.querySelector('enclosure')?.getAttribute('url') || '';
-        const link    = item.querySelector('link')?.textContent?.trim() || encUrl || '#';
-
-        // episode number: try itunes:episode, then extract from title
-        let epNum = item.getElementsByTagNameNS(ns, 'episode')[0]?.textContent?.trim();
-        if (!epNum) {
-          const m = title.match(/\b(\d{2,3})\b/);
-          epNum = m ? m[1] : (items.length - i);
-        }
-
-        const isLatest   = i === 0;
-        const numStyle   = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
-        const latestBadge = isLatest ? ' 🔴' : '';
-        const dateStr    = formatDate(pubDate);
-
-        // prefer direct spotify/apple link; fallback to audio url
-        const href = encUrl || link;
+      list.innerHTML = episodes.map((ep, i) => {
+        const title    = ep.trackName || '';
+        const desc     = (ep.description || ep.shortDescription || '').trim().substring(0, 220);
+        const dateStr  = formatDate(ep.releaseDate);
+        const href     = ep.trackViewUrl || ep.episodeUrl || '#';
+        const epNum    = extractEpNum(title) || (LATEST_EP - i);
+        const isLatest = i === 0;
+        const numStyle = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
 
         return `
           <a href="${href}" target="_blank" rel="noopener" class="episode-card">
-            <div class="episode-num" style="${numStyle}">#${epNum}${latestBadge}</div>
+            <div class="episode-num" style="${numStyle}">#${epNum}${isLatest ? ' 🔴' : ''}</div>
             <div class="episode-body">
               <div class="episode-title">${title}</div>
               <div class="episode-desc">${desc}${desc.length >= 220 ? '...' : ''}</div>
@@ -943,46 +919,17 @@
       }).join('');
     }
 
-    async function fetchWithProxy(proxyFn, url) {
-      const res = await fetch(proxyFn(url), { headers: { 'Accept': 'application/rss+xml, text/xml, */*' } });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.text();
-    }
-
-    async function loadPage(pageNum, proxyFn) {
-      const url = RSS_URL + (pageNum > 1 ? '?page=' + pageNum : '');
-      return fetchWithProxy(proxyFn, url);
-    }
-
     async function loadEpisodes() {
       const list = document.getElementById('episodes-list');
-      let workingProxy = null;
-
-      // find a working proxy
-      for (const proxyFn of PROXIES) {
-        try {
-          await fetchWithProxy(proxyFn, RSS_URL);
-          workingProxy = proxyFn;
-          break;
-        } catch (_) { /* try next */ }
-      }
-
-      if (!workingProxy) {
-        list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
-        return;
-      }
-
-      // fetch pages 1 and 2 in parallel to get ~100 episodes
       try {
-        const [page1, page2] = await Promise.all([
-          loadPage(1, workingProxy),
-          loadPage(2, workingProxy).catch(() => null),
-        ]);
+        const url = `https://itunes.apple.com/lookup?id=${PODCAST_ID}&entity=podcastEpisode&limit=100&country=il`;
+        const res  = await fetch(url);
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const data = await res.json();
 
-        let items = parseAndRender(page1);
-        if (page2) items = parseAndRender(page2, items);
-
-        renderEpisodes(items.slice(0, 100));
+        // first result is the podcast itself — skip it
+        const episodes = data.results.filter(r => r.wrapperType === 'podcastEpisode');
+        renderEpisodes(episodes);
       } catch (e) {
         list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
       }
