@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://money-engines.netlify.app/sitemap.xml
