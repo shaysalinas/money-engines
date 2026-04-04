@@ -876,6 +876,148 @@
       margin-bottom: 14px;
     }
 
+    /* ── SKIP LINK ── */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      right: 0;
+      background: var(--red);
+      color: #fff;
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      z-index: 9999;
+      border-radius: 0 0 8px 8px;
+      text-decoration: none;
+      transition: top 0.2s;
+    }
+    .skip-link:focus { top: 0; outline: 3px solid #fff; }
+
+    /* ── FOCUS STYLES ── */
+    :focus-visible {
+      outline: 3px solid var(--red-light);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .episode-card:focus-visible { outline: 3px solid var(--red-light); }
+    .platform-card:focus-visible { outline: 3px solid var(--red-light); }
+
+    /* ── ACCESSIBILITY BUTTON ── */
+    .a11y-btn {
+      position: fixed;
+      bottom: 30px;
+      left: 30px;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--red);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9998;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      transition: background 0.2s;
+    }
+    .a11y-btn:hover { background: var(--red-dark); }
+
+    /* ── ACCESSIBILITY PANEL ── */
+    .a11y-panel {
+      position: fixed;
+      bottom: 92px;
+      left: 30px;
+      width: 260px;
+      background: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 14px;
+      padding: 20px;
+      z-index: 9997;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: none;
+      direction: rtl;
+    }
+    .a11y-panel.open { display: block; }
+    .a11y-panel h2 {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      color: var(--white);
+    }
+    .a11y-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      gap: 8px;
+    }
+    .a11y-row span { font-size: 0.88rem; color: #ccc; }
+    .a11y-toggle {
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: var(--white);
+      border-radius: 8px;
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: inherit;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .a11y-toggle:hover { background: var(--red); border-color: var(--red); }
+    .a11y-toggle.active { background: var(--red); border-color: var(--red-dark); }
+    .a11y-font-row { display: flex; gap: 8px; }
+    .a11y-font-row button {
+      flex: 1;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      color: var(--white);
+      border-radius: 8px;
+      padding: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    .a11y-font-row button:hover { background: var(--red); border-color: var(--red); }
+    .a11y-reset {
+      width: 100%;
+      margin-top: 14px;
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      border-radius: 8px;
+      padding: 7px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+    .a11y-reset:hover { border-color: var(--red-light); color: var(--white); }
+
+    /* ── ACCESSIBILITY MODES ── */
+    body.a11y-high-contrast {
+      --black: #000;
+      --white: #fff;
+      --red:   #ff3333;
+      --red-light: #ff5555;
+      background: #000 !important;
+      color: #fff !important;
+    }
+    body.a11y-high-contrast .episode-card,
+    body.a11y-high-contrast .host-card,
+    body.a11y-high-contrast .platform-card { background: #111 !important; border-color: #fff !important; }
+
+    body.a11y-grayscale { filter: grayscale(100%); }
+
+    body.a11y-underline-links a { text-decoration: underline !important; }
+
+    body.a11y-pause-animations *,
+    body.a11y-pause-animations *::before,
+    body.a11y-pause-animations *::after { animation: none !important; transition: none !important; }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 760px) {
       header { padding: 12px 20px; }
@@ -904,13 +1046,16 @@
 </head>
 <body id="about">
 
+  <!-- SKIP LINK -->
+  <a href="#main-content" class="skip-link">דלג לתוכן הראשי</a>
+
   <!-- HEADER -->
-  <header>
-    <a href="#" class="header-logo">
-      <img src="logo-studio.jpg" alt="מנועי הכסף לוגו" />
+  <header role="banner">
+    <a href="#" class="header-logo" aria-label="מנועי הכסף - עמוד הבית">
+      <img src="logo-studio.jpg" alt="לוגו מנועי הכסף" />
       <span>מנועי הכסף</span>
     </a>
-    <nav>
+    <nav aria-label="ניווט ראשי">
       <a href="#about">על הפודקאסט</a>
       <a href="#hosts">המגישים</a>
       <a href="#episodes">פרקים</a>
@@ -918,8 +1063,10 @@
     </nav>
   </header>
 
+  <main id="main-content">
+
   <!-- HERO -->
-  <section class="hero">
+  <section class="hero" aria-label="כותרת ראשית">
     <div class="hero-badge">🎙️ פודקאסט כלכלי מבית כלכליסט</div>
     <img
       class="hero-logo"
@@ -1077,9 +1224,9 @@
       <h2 class="section-title">כל פרקי הפודקאסט</h2>
       <div class="divider"></div>
       <div class="episode-search-wrap">
-        <input type="text" id="episode-search" placeholder="חיפוש פרק לפי שם או נושא..." autocomplete="off" />
-        <span class="search-icon">🔍</span>
-        <button class="search-clear" id="search-clear" title="נקה חיפוש">✕</button>
+        <input type="text" id="episode-search" placeholder="חיפוש פרק לפי שם או נושא..." autocomplete="off" aria-label="חיפוש פרקים" role="searchbox" />
+        <span class="search-icon" aria-hidden="true">🔍</span>
+        <button class="search-clear" id="search-clear" title="נקה חיפוש" aria-label="נקה חיפוש">✕</button>
       </div>
       <div class="search-results-info" id="search-info" style="display:none"></div>
       <div class="episodes-grid" id="episodes-list">
@@ -1103,28 +1250,28 @@
         בחרו את הפלטפורמה שמתאימה לכם והתחילו להאזין עכשיו
       </p>
       <div class="platforms-grid">
-        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="platform-card">
+        <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" target="_blank" rel="noopener" class="platform-card" aria-label="האזינו למנועי הכסף בספוטיפיי (נפתח בחלון חדש)">
           <div class="platform-icon">
             <svg viewBox="0 0 24 24" fill="#1DB954" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
           </div>
           <div class="platform-name">Spotify</div>
           <div class="platform-cta">האזן עכשיו ←</div>
         </a>
-        <a href="https://podcasts.apple.com/il/podcast/%D7%9E%D7%A0%D7%95%D7%A2%D7%99-%D7%94%D7%9B%D7%A1%D7%A3/id1340384819" target="_blank" rel="noopener" class="platform-card">
+        <a href="https://podcasts.apple.com/il/podcast/%D7%9E%D7%A0%D7%95%D7%A2%D7%99-%D7%94%D7%9B%D7%A1%D7%A3/id1340384819" target="_blank" rel="noopener" class="platform-card" aria-label="האזינו למנועי הכסף ב-Apple Podcasts (נפתח בחלון חדש)">
           <div class="platform-icon">
             <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="apple-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F452FF"/><stop offset="100%" style="stop-color:#832BC1"/></linearGradient></defs><rect width="24" height="24" rx="5.5" fill="url(#apple-grad)"/><path d="M12 2.4a5.16 5.16 0 0 1 5.16 5.16c0 1.37-.535 2.614-1.404 3.534.013.198.02.398.02.6C15.776 14.77 14.1 17.1 12 17.1s-3.776-2.33-3.776-5.406c0-.202.007-.402.02-.6A5.137 5.137 0 0 1 6.84 7.56 5.16 5.16 0 0 1 12 2.4zm0 2.16a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 1.44a1.56 1.56 0 1 1 0 3.12 1.56 1.56 0 0 1 0-3.12zm-.72 10.56h1.44v4.8h-1.44v-4.8z" fill="white"/></svg>
           </div>
           <div class="platform-name">Apple Podcasts</div>
           <div class="platform-cta">האזן עכשיו ←</div>
         </a>
-        <a href="https://www.youtube.com/@money_engines" target="_blank" rel="noopener" class="platform-card">
+        <a href="https://www.youtube.com/@money_engines" target="_blank" rel="noopener" class="platform-card" aria-label="צפו במנועי הכסף ביוטיוב (נפתח בחלון חדש)">
           <div class="platform-icon">
             <svg viewBox="0 0 24 24" fill="#FF0000" xmlns="http://www.w3.org/2000/svg"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
           </div>
           <div class="platform-name">YouTube</div>
           <div class="platform-cta">צפה עכשיו ←</div>
         </a>
-        <a href="https://t.me/moneyenginespodcast" target="_blank" rel="noopener" class="platform-card">
+        <a href="https://t.me/moneyenginespodcast" target="_blank" rel="noopener" class="platform-card" aria-label="הצטרפו לקהילת מנועי הכסף בטלגרם (נפתח בחלון חדש)">
           <div class="platform-icon">
             <svg viewBox="0 0 24 24" fill="#2CA5E0" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
           </div>
@@ -1135,9 +1282,11 @@
     </div>
   </section>
 
+  </main><!-- /main -->
+
   <!-- FOOTER -->
-  <footer>
-    <img src="logo-studio.jpg" alt="מנועי הכסף" class="footer-logo" />
+  <footer role="contentinfo">
+    <img src="logo-studio.jpg" alt="לוגו מנועי הכסף" class="footer-logo" />
     <p>
       &copy; 2026 מנועי הכסף – שי סלינס ואורי גרינפלד |
       <a href="https://www.calcalist.co.il/market/category/5357" target="_blank" rel="noopener">כלכליסט</a>.
@@ -1147,14 +1296,48 @@
       <a href="#" onclick="document.getElementById('privacy-modal').classList.add('open');return false;">מדיניות פרטיות</a>
       &nbsp;·&nbsp;
       <a href="mailto:shay.salinas@calcalist.co.il">צרו קשר</a>
+      &nbsp;·&nbsp;
+      <a href="/accessibility.html">הצהרת נגישות</a>
     </p>
   </footer>
 
+  <!-- ACCESSIBILITY BUTTON & PANEL -->
+  <button class="a11y-btn" id="a11y-btn" aria-label="פתח תפריט נגישות" aria-expanded="false" aria-controls="a11y-panel">
+    ♿
+  </button>
+  <div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="תפריט נגישות" aria-modal="false">
+    <h2>הגדרות נגישות</h2>
+    <div class="a11y-row">
+      <span>גודל טקסט</span>
+      <div class="a11y-font-row">
+        <button onclick="a11yFontSize(-1)" aria-label="הקטן גודל טקסט">א-</button>
+        <button onclick="a11yFontSize(1)"  aria-label="הגדל גודל טקסט">א+</button>
+      </div>
+    </div>
+    <div class="a11y-row">
+      <span>ניגודיות גבוהה</span>
+      <button class="a11y-toggle" id="tog-contrast" onclick="a11yToggle('a11y-high-contrast','tog-contrast')" aria-pressed="false">הפעל</button>
+    </div>
+    <div class="a11y-row">
+      <span>גווני אפור</span>
+      <button class="a11y-toggle" id="tog-gray" onclick="a11yToggle('a11y-grayscale','tog-gray')" aria-pressed="false">הפעל</button>
+    </div>
+    <div class="a11y-row">
+      <span>הדגש קישורים</span>
+      <button class="a11y-toggle" id="tog-links" onclick="a11yToggle('a11y-underline-links','tog-links')" aria-pressed="false">הפעל</button>
+    </div>
+    <div class="a11y-row">
+      <span>עצור אנימציות</span>
+      <button class="a11y-toggle" id="tog-anim" onclick="a11yToggle('a11y-pause-animations','tog-anim')" aria-pressed="false">הפעל</button>
+    </div>
+    <button class="a11y-reset" onclick="a11yReset()">אפס הכל</button>
+  </div>
+
   <!-- PRIVACY MODAL -->
-  <div class="modal-overlay" id="privacy-modal" onclick="if(event.target===this)this.classList.remove('open')">
+  <div class="modal-overlay" id="privacy-modal" role="dialog" aria-modal="true" aria-labelledby="privacy-modal-title" onclick="if(event.target===this)this.classList.remove('open')">
     <div class="modal-box">
-      <button class="modal-close" onclick="document.getElementById('privacy-modal').classList.remove('open')">✕</button>
-      <h3>מדיניות פרטיות</h3>
+      <button class="modal-close" onclick="document.getElementById('privacy-modal').classList.remove('open')" aria-label="סגור חלון מדיניות פרטיות">✕</button>
+      <h3 id="privacy-modal-title">מדיניות פרטיות</h3>
       <p>עמוד נחיתה זה של פודקאסט "מנועי הכסף" אינו אוסף מידע אישי מזהה על המבקרים בו.</p>
       <p><strong>קישורים חיצוניים:</strong> העמוד מכיל קישורים לפלטפורמות האזנה חיצוניות (Spotify, Apple Podcasts, YouTube, Telegram). לחיצה עליהם מעבירה אתכם לאתרים של אותן פלטפורמות, הכפופים למדיניות הפרטיות שלהן.</p>
       <p><strong>נתוני שימוש:</strong> ייתכן שספק האחסון (Netlify) אוסף נתוני גישה סטנדרטיים כגון כתובות IP, סוג הדפדפן ועמודים שנצפו, לצורכי תפעול ואבטחה בלבד.</p>
@@ -1225,8 +1408,8 @@
               <div class="episode-title">${ep.title}</div>
               <div class="episode-desc">${ep.desc}</div>
             </div>
-            <div class="episode-play">
-              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+            <div class="episode-play" role="img" aria-label="האזן לפרק">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             </div>
           </a>`;
       }).join('');
@@ -1353,6 +1536,76 @@
     }
 
     loadEpisodes();
+
+    /* ── ACCESSIBILITY PANEL ── */
+    const a11yBtn   = document.getElementById('a11y-btn');
+    const a11yPanel = document.getElementById('a11y-panel');
+    let   fontScale = parseInt(localStorage.getItem('a11y-font') || '0');
+
+    function applyFontScale() {
+      document.documentElement.style.fontSize = fontScale === 0
+        ? '' : (100 + fontScale * 10) + '%';
+    }
+
+    function a11yFontSize(dir) {
+      fontScale = Math.max(-2, Math.min(3, fontScale + dir));
+      localStorage.setItem('a11y-font', fontScale);
+      applyFontScale();
+    }
+
+    function a11yToggle(cls, togId) {
+      const on = document.body.classList.toggle(cls);
+      localStorage.setItem(cls, on ? '1' : '0');
+      const btn = document.getElementById(togId);
+      btn.textContent  = on ? 'כבה' : 'הפעל';
+      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      btn.classList.toggle('active', on);
+    }
+
+    function a11yReset() {
+      ['a11y-high-contrast','a11y-grayscale','a11y-underline-links','a11y-pause-animations']
+        .forEach(cls => {
+          document.body.classList.remove(cls);
+          localStorage.removeItem(cls);
+          const tog = document.querySelector(`[onclick*="${cls}"]`);
+          if (tog) { tog.textContent = 'הפעל'; tog.setAttribute('aria-pressed','false'); tog.classList.remove('active'); }
+        });
+      fontScale = 0;
+      localStorage.removeItem('a11y-font');
+      applyFontScale();
+    }
+
+    // restore saved preferences
+    ['a11y-high-contrast','a11y-grayscale','a11y-underline-links','a11y-pause-animations']
+      .forEach(cls => {
+        if (localStorage.getItem(cls) === '1') {
+          document.body.classList.add(cls);
+          const tog = document.querySelector(`[onclick*="${cls}"]`);
+          if (tog) { tog.textContent = 'כבה'; tog.setAttribute('aria-pressed','true'); tog.classList.add('active'); }
+        }
+      });
+    applyFontScale();
+
+    a11yBtn.addEventListener('click', () => {
+      const open = a11yPanel.classList.toggle('open');
+      a11yBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    // close panel on outside click
+    document.addEventListener('click', e => {
+      if (!a11yPanel.contains(e.target) && e.target !== a11yBtn) {
+        a11yPanel.classList.remove('open');
+        a11yBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // close panel on Escape
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') {
+        a11yPanel.classList.remove('open');
+        a11yBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
 
     /* ── ACTIVE NAV ON SCROLL ── */
     const sections = document.querySelectorAll('section[id], div[id]');

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>הצהרת נגישות – מנועי הכסף</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --red: #c11e1e;
+      --red-light: #e02828;
+      --black: #0d0d0d;
+      --white: #ffffff;
+    }
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'Assistant', sans-serif;
+      font-size: 1rem;
+      line-height: 1.8;
+      direction: rtl;
+    }
+    :focus-visible { outline: 3px solid var(--red-light); outline-offset: 3px; border-radius: 4px; }
+
+    header {
+      background: #111;
+      border-bottom: 1px solid #222;
+      padding: 18px 40px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    header a {
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    header img { width: 40px; height: 40px; border-radius: 8px; object-fit: cover; }
+    header a:hover { color: var(--red-light); }
+
+    main {
+      max-width: 760px;
+      margin: 60px auto;
+      padding: 0 24px 80px;
+    }
+
+    .page-tag {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--red-light);
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .divider {
+      width: 50px;
+      height: 4px;
+      background: var(--red);
+      border-radius: 2px;
+      margin: 20px 0 36px;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin: 36px 0 12px;
+      color: var(--white);
+    }
+
+    p { color: #ccc; margin-bottom: 14px; }
+
+    ul {
+      color: #ccc;
+      padding-right: 20px;
+      margin-bottom: 14px;
+    }
+    ul li { margin-bottom: 6px; }
+
+    a { color: var(--red-light); }
+    a:hover { text-decoration: underline; }
+
+    .contact-box {
+      background: #1c1c1c;
+      border: 1px solid #2a2a2a;
+      border-radius: 14px;
+      padding: 24px 28px;
+      margin-top: 36px;
+    }
+    .contact-box h2 { margin-top: 0; }
+    .contact-box p  { margin-bottom: 6px; }
+
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: #555;
+      font-size: 0.85rem;
+      border-top: 1px solid #1a1a1a;
+    }
+    footer a { color: #777; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="/" aria-label="חזרה לעמוד הבית של מנועי הכסף">
+      <img src="/logo-studio.jpg" alt="לוגו מנועי הכסף" />
+      מנועי הכסף
+    </a>
+  </header>
+
+  <main id="main-content">
+    <span class="page-tag">נגישות</span>
+    <h1>הצהרת נגישות</h1>
+    <div class="divider"></div>
+
+    <p>
+      אנו ב"מנועי הכסף" מחויבים להנגשת האתר לכלל המשתמשים, לרבות אנשים עם מוגבלויות,
+      בהתאם לדרישות תקן ישראלי 5568 (המבוסס על WCAG 2.1 ברמה AA).
+    </p>
+
+    <h2>מה הונגש?</h2>
+    <ul>
+      <li>כל התמונות באתר כוללות טקסט חלופי (alt text) בעברית</li>
+      <li>ניתן לנווט בכל האתר באמצעות מקלדת בלבד (Tab, Enter, Space)</li>
+      <li>קיים כפתור נגישות בפינה השמאלית התחתונה עם אפשרויות לכוונון תצוגה</li>
+      <li>כל האלמנטים האינטראקטיביים כוללים תוויות ARIA מתאימות</li>
+      <li>ניגודיות הצבעים עומדת בדרישות WCAG 2.1 ברמה AA</li>
+      <li>האתר מוצהר בשפה עברית (<code>lang="he" dir="rtl"</code>)</li>
+      <li>קיים קישור "דלג לתוכן" כרכיב הראשון הניתן להפעלה בדף</li>
+      <li>מבנה הדף מבוסס על תגיות סמנטיות: <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;nav&gt;</code>, <code>&lt;footer&gt;</code>, <code>&lt;section&gt;</code></li>
+    </ul>
+
+    <h2>תפריט נגישות</h2>
+    <p>
+      בפינה השמאלית התחתונה של כל עמוד מופיע כפתור נגישות (♿). לחיצה עליו פותחת
+      תפריט המאפשר:
+    </p>
+    <ul>
+      <li>הגדלה/הקטנה של גודל הטקסט</li>
+      <li>מצב ניגודיות גבוהה</li>
+      <li>תצוגה בגווני אפור</li>
+      <li>הדגשת קישורים</li>
+      <li>עצירת אנימציות</li>
+    </ul>
+    <p>ההגדרות נשמרות אוטומטית לביקורים עתידיים.</p>
+
+    <h2>רמת הנגישות</h2>
+    <p>
+      האתר עומד ברמת נגישות AA של תקן WCAG 2.1, בהתאם לדרישות תקן ישראלי 5568.
+      בוצעה בדיקת נגישות עצמית. אנו פועלים לשיפור מתמיד.
+    </p>
+
+    <h2>מה לא הונגש?</h2>
+    <p>
+      תוכן מוטמע ממקורות חיצוניים (כגון נגני Spotify, Apple Podcasts, YouTube)
+      עשוי שלא לעמוד במלואו בדרישות התקן. נגישות הפלטפורמות החיצוניות כפופה
+      למדיניות הנגישות שלהן.
+    </p>
+
+    <div class="contact-box">
+      <h2>פניות בנושא נגישות</h2>
+      <p>נתקלתם בבעיית נגישות? אנחנו כאן לעזור.</p>
+      <p><strong>רכז נגישות:</strong> שי סלינס</p>
+      <p><strong>אימייל:</strong> <a href="mailto:shay.salinas@calcalist.co.il">shay.salinas@calcalist.co.il</a></p>
+      <p><strong>זמן תגובה:</strong> עד 5 ימי עסקים</p>
+      <p style="margin-top: 16px; font-size: 0.85rem; color: #666;">
+        הצהרה זו עודכנה לאחרונה: אפריל 2026
+      </p>
+    </div>
+  </main>
+
+  <footer>
+    <a href="/">&larr; חזרה לעמוד הבית</a>
+    &nbsp;·&nbsp;
+    &copy; 2026 מנועי הכסף
+  </footer>
+
+</body>
+</html>
