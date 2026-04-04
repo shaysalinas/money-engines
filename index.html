@@ -1301,12 +1301,17 @@
     }
 
     async function loadViaRSS() {
-      const res = await fetch('/.netlify/functions/rss-proxy');
+      const res  = await fetch('/.netlify/functions/rss-proxy');
       if (!res.ok) throw new Error('RSS proxy HTTP ' + res.status);
-      const xml = await res.text();
-      const eps = parseRSS(xml);
-      if (!eps.length) throw new Error('empty RSS');
-      return eps;
+      const data = await res.json();
+      if (!data.episodes || !data.episodes.length) throw new Error('empty RSS');
+      return data.episodes.map(ep => ({
+        title: ep.title,
+        desc:  stripHtml(ep.desc).substring(0, 220),
+        date:  ep.date,
+        link:  ep.link || '#',
+        epNum: ep.epNum,
+      }));
     }
 
     async function loadViaiTunes() {
