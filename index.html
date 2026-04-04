@@ -1207,14 +1207,14 @@
 
       list.innerHTML = slice.map((ep, i) => {
         const globalIdx = start + i;
-        const epNum     = ep.epNum || (allEpisodes.length - globalIdx);
+        const epNum     = ep.epNum != null ? ep.epNum : '';
         const isLatest  = globalIdx === 0;
         const numStyle  = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
         const dateStr   = formatDate(ep.date);
 
         return `
           <a href="${ep.link}" target="_blank" rel="noopener" class="episode-card">
-            <div class="episode-num" style="${numStyle}">#${epNum}${isLatest ? ' 🔴' : ''}</div>
+            <div class="episode-num" style="${numStyle}">${epNum ? '#' + epNum : ''}${isLatest ? ' 🔴' : ''}</div>
             <div class="episode-body">
               <div class="episode-title">${ep.title}</div>
               <div class="episode-desc">${ep.desc}${ep.desc.length >= 220 ? '...' : ''}</div>
@@ -1291,11 +1291,11 @@
       clearBtn.addEventListener('click', () => { input.value = ''; applySearch(''); input.focus(); });
     }
 
-    function finish(episodes, label) {
+    function finish(episodes) {
       allEpisodes    = episodes;
       activeEpisodes = episodes;
       const titleEl  = document.querySelector('.episodes .section-title');
-      if (titleEl) titleEl.textContent = label;
+      if (titleEl) titleEl.textContent = 'כל פרקי הפודקאסט';
       renderPage(1);
       wireSearch();
     }
@@ -1333,12 +1333,12 @@
       const list = document.getElementById('episodes-list');
       try {
         const eps = await loadViaRSS();
-        finish(eps, `כל ${eps.length} פרקי הפודקאסט`);
+        finish(eps);
       } catch (e1) {
         try {
           const eps = await loadViaiTunes();
           if (!eps.length) throw new Error('empty');
-          finish(eps, `${eps.length} הפרקים האחרונים`);
+          finish(eps);
         } catch (e2) {
           list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
         }
