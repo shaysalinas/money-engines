@@ -460,56 +460,62 @@
       background: #1c1c1c;
       border: 1px solid #2a2a2a;
       border-radius: 14px;
-      padding: 22px 26px;
+      padding: 20px 28px;
       display: flex;
-      align-items: flex-start;
+      align-items: center;
       gap: 20px;
-      transition: all 0.25s;
+      transition: background 0.2s, border-color 0.2s;
       text-decoration: none;
       color: var(--white);
+      cursor: pointer;
     }
     .episode-card:hover {
-      border-color: var(--red);
-      background: #222;
-      transform: translateX(-4px);
+      background: #262626;
+      border-color: rgba(193,30,30,0.5);
     }
 
-    .episode-num {
+    .episode-num { display: none; }
+
+    .episode-body { flex: 1; min-width: 0; }
+
+    .episode-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+
+    .episode-date-inline {
       font-size: 0.8rem;
       font-weight: 700;
       color: var(--red-light);
-      background: rgba(193,30,30,0.12);
-      border: 1px solid rgba(193,30,30,0.25);
-      border-radius: 8px;
-      padding: 4px 10px;
-      white-space: nowrap;
-      min-width: 56px;
-      text-align: center;
-      margin-top: 3px;
-    }
-
-    .episode-body { flex: 1; }
-
-    .episode-title {
-      font-size: 1.05rem;
-      font-weight: 700;
       margin-bottom: 6px;
-      line-height: 1.35;
     }
 
     .episode-desc {
-      font-size: 0.88rem;
-      color: #888;
-      line-height: 1.6;
+      font-size: 0.85rem;
+      color: #777;
+      line-height: 1.55;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
     }
 
     .episode-play {
+      flex-shrink: 0;
       align-self: center;
-      font-size: 1.4rem;
-      opacity: 0.5;
-      transition: opacity 0.2s;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--red);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
     }
-    .episode-card:hover .episode-play { opacity: 1; }
+    .episode-play svg { width: 16px; height: 16px; fill: #fff; margin-right: -2px; }
+    .episode-card:hover .episode-play { background: var(--red-dark); }
 
     /* ── PAGINATION ── */
     .pagination {
@@ -1214,13 +1220,14 @@
 
         return `
           <a href="${ep.link}" target="_blank" rel="noopener" class="episode-card">
-            <div class="episode-num" style="${numStyle}">${epNum ? '#' + epNum : ''}${isLatest ? ' 🔴' : ''}</div>
             <div class="episode-body">
+              ${dateStr ? `<div class="episode-date-inline">${dateStr}</div>` : ''}
               <div class="episode-title">${ep.title}</div>
-              <div class="episode-desc">${ep.desc}${ep.desc.length >= 220 ? '...' : ''}</div>
-              ${dateStr ? `<div class="episode-date">${dateStr}</div>` : ''}
+              <div class="episode-desc">${ep.desc}</div>
             </div>
-            <div class="episode-play">▶</div>
+            <div class="episode-play">
+              <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>
+            </div>
           </a>`;
       }).join('');
 
