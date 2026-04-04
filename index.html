@@ -1068,7 +1068,7 @@
   <section class="episodes" id="episodes">
     <div class="section-inner">
       <div class="section-tag">ארכיון פרקים</div>
-      <h2 class="section-title">100 הפרקים האחרונים</h2>
+      <h2 class="section-title">כל פרקי הפודקאסט</h2>
       <div class="divider"></div>
       <div class="episode-search-wrap">
         <input type="text" id="episode-search" placeholder="חיפוש פרק לפי שם או נושא..." autocomplete="off" />
@@ -1159,13 +1159,11 @@
   </div>
 
   <script>
-    /* ── EPISODE LOADER — Apple Podcasts API (no CORS issues) ── */
-    const PODCAST_ID  = '1340384819';
-    const LATEST_EP   = 374;
-    const PER_PAGE    = 10;
+    /* ── EPISODE LOADER — RSS via Netlify Function ── */
+    const PER_PAGE = 10;
 
     let allEpisodes    = [];
-    let activeEpisodes = []; // filtered or full list
+    let activeEpisodes = [];
     let currentPage    = 1;
 
     function formatDate(str) {
@@ -1175,51 +1173,61 @@
       return d.toLocaleDateString('he-IL', { day: 'numeric', month: 'long', year: 'numeric' });
     }
 
-    function extractEpNum(title) {
-      const m = title.match(/פרק\s+(\d{2,3})/) || title.match(/[|#\s](\d{3})\b/);
-      return m ? m[1] : null;
+    function stripHtml(html) {
+      const d = document.createElement('div');
+      d.innerHTML = html;
+      return d.textContent || '';
+    }
+
+    function parseRSS(xmlText) {
+      const parser = new DOMParser();
+      const xml    = parser.parseFromString(xmlText, 'text/xml');
+      const NS     = 'http://www.itunes.com/dtds/podcast-1.0.dtd';
+      return Array.from(xml.querySelectorAll('item')).map(item => {
+        const get  = tag => item.querySelector(tag)?.textContent?.trim() || '';
+        const getN = (tag) => item.getElementsByTagNameNS(NS, tag)[0]?.textContent?.trim() || '';
+        return {
+          title:   get('title'),
+          desc:    stripHtml(get('description') || getN('summary')).substring(0, 220),
+          date:    get('pubDate'),
+          link:    item.querySelector('enclosure')?.getAttribute('url') || get('link') || '#',
+          epNum:   getN('episode') || null,
+        };
+      });
     }
 
     function renderPage(page) {
-      const list     = document.getElementById('episodes-list');
-      const pagEl    = document.getElementById('pagination');
-      const infoEl   = document.getElementById('page-info');
-      const start    = (page - 1) * PER_PAGE;
-      const slice    = activeEpisodes.slice(start, start + PER_PAGE);
-      const total    = activeEpisodes.length;
+      const list       = document.getElementById('episodes-list');
+      const pagEl      = document.getElementById('pagination');
+      const infoEl     = document.getElementById('page-info');
+      const start      = (page - 1) * PER_PAGE;
+      const slice      = activeEpisodes.slice(start, start + PER_PAGE);
+      const total      = activeEpisodes.length;
       const totalPages = Math.ceil(total / PER_PAGE);
 
-      // render cards
       list.innerHTML = slice.map((ep, i) => {
         const globalIdx = start + i;
-        const title    = ep.trackName || '';
-        const desc     = (ep.description || ep.shortDescription || '').trim().substring(0, 220);
-        const dateStr  = formatDate(ep.releaseDate);
-        const href     = ep.trackViewUrl || ep.episodeUrl || '#';
-        const epNum    = extractEpNum(title) || (LATEST_EP - globalIdx);
-        const isLatest = globalIdx === 0;
-        const numStyle = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
+        const epNum     = ep.epNum || (allEpisodes.length - globalIdx);
+        const isLatest  = globalIdx === 0;
+        const numStyle  = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
+        const dateStr   = formatDate(ep.date);
 
         return `
-          <a href="${href}" target="_blank" rel="noopener" class="episode-card">
+          <a href="${ep.link}" target="_blank" rel="noopener" class="episode-card">
             <div class="episode-num" style="${numStyle}">#${epNum}${isLatest ? ' 🔴' : ''}</div>
             <div class="episode-body">
-              <div class="episode-title">${title}</div>
-              <div class="episode-desc">${desc}${desc.length >= 220 ? '...' : ''}</div>
+              <div class="episode-title">${ep.title}</div>
+              <div class="episode-desc">${ep.desc}${ep.desc.length >= 220 ? '...' : ''}</div>
               ${dateStr ? `<div class="episode-date">${dateStr}</div>` : ''}
             </div>
             <div class="episode-play">▶</div>
           </a>`;
       }).join('');
 
-      // render pagination
       pagEl.style.display = 'flex';
       const pages = [];
-
-      // prev button
       pages.push(`<button class="page-btn nav-btn" onclick="goToPage(${page - 1})" ${page === 1 ? 'disabled' : ''}>→ הקודם</button>`);
 
-      // page numbers — show max 5 around current
       const delta = 2;
       const rangeStart = Math.max(1, page - delta);
       const rangeEnd   = Math.min(totalPages, page + delta);
@@ -1228,22 +1236,16 @@
         pages.push(`<button class="page-btn" onclick="goToPage(1)">1</button>`);
         if (rangeStart > 2) pages.push(`<span style="color:#555;align-self:center">…</span>`);
       }
-
       for (let p = rangeStart; p <= rangeEnd; p++) {
         pages.push(`<button class="page-btn ${p === page ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`);
       }
-
       if (rangeEnd < totalPages) {
         if (rangeEnd < totalPages - 1) pages.push(`<span style="color:#555;align-self:center">…</span>`);
         pages.push(`<button class="page-btn" onclick="goToPage(${totalPages})">${totalPages}</button>`);
       }
-
-      // next button
       pages.push(`<button class="page-btn nav-btn" onclick="goToPage(${page + 1})" ${page === totalPages ? 'disabled' : ''}>הבא ←</button>`);
-
       pagEl.innerHTML = pages.join('');
 
-      // info line
       infoEl.textContent = `עמוד ${page} מתוך ${totalPages} · סה"כ ${total} פרקים`;
     }
 
@@ -1256,30 +1258,26 @@
     }
 
     function applySearch(query) {
-      const infoEl  = document.getElementById('search-info');
-      const clearBtn = document.getElementById('search-clear');
+      const infoEl     = document.getElementById('search-info');
+      const clearBtn   = document.getElementById('search-clear');
       const searchIcon = document.querySelector('.search-icon');
 
       if (!query) {
-        activeEpisodes = allEpisodes;
-        infoEl.style.display  = 'none';
-        clearBtn.style.display = 'none';
+        activeEpisodes           = allEpisodes;
+        infoEl.style.display     = 'none';
+        clearBtn.style.display   = 'none';
         searchIcon.style.display = 'block';
       } else {
-        const q = query.toLowerCase();
-        activeEpisodes = allEpisodes.filter(ep => {
-          const title = (ep.trackName || '').toLowerCase();
-          const desc  = (ep.description || ep.shortDescription || '').toLowerCase();
-          return title.includes(q) || desc.includes(q);
-        });
-        clearBtn.style.display = 'block';
+        const q    = query.toLowerCase();
+        activeEpisodes = allEpisodes.filter(ep =>
+          ep.title.toLowerCase().includes(q) || ep.desc.toLowerCase().includes(q)
+        );
+        clearBtn.style.display   = 'block';
         searchIcon.style.display = 'none';
-        infoEl.style.display = 'block';
-        if (activeEpisodes.length) {
-          infoEl.innerHTML = `נמצאו <span>${activeEpisodes.length}</span> פרקים עבור: "${query}"`;
-        } else {
-          infoEl.innerHTML = `לא נמצאו פרקים עבור: "<span>${query}</span>"`;
-        }
+        infoEl.style.display     = 'block';
+        infoEl.innerHTML = activeEpisodes.length
+          ? `נמצאו <span>${activeEpisodes.length}</span> פרקים עבור: "${query}"`
+          : `לא נמצאו פרקים עבור: "<span>${query}</span>"`;
       }
 
       currentPage = 1;
@@ -1289,25 +1287,25 @@
     async function loadEpisodes() {
       const list = document.getElementById('episodes-list');
       try {
-        const url = `https://itunes.apple.com/lookup?id=${PODCAST_ID}&entity=podcastEpisode&limit=100&country=il`;
-        const res  = await fetch(url);
+        const res = await fetch('/.netlify/functions/rss-proxy');
         if (!res.ok) throw new Error('HTTP ' + res.status);
-        const data = await res.json();
+        const xml = await res.text();
 
-        allEpisodes    = data.results.filter(r => r.wrapperType === 'podcastEpisode');
+        allEpisodes    = parseRSS(xml);
         activeEpisodes = allEpisodes;
         if (!allEpisodes.length) throw new Error('no episodes');
+
+        // update section title with real count
+        const titleEl = document.querySelector('.episodes .section-title');
+        if (titleEl) titleEl.textContent = `כל ${allEpisodes.length} פרקי הפודקאסט`;
+
         renderPage(1);
 
-        // wire up search
         const input    = document.getElementById('episode-search');
         const clearBtn = document.getElementById('search-clear');
         input.addEventListener('input', () => applySearch(input.value.trim()));
-        clearBtn.addEventListener('click', () => {
-          input.value = '';
-          applySearch('');
-          input.focus();
-        });
+        clearBtn.addEventListener('click', () => { input.value = ''; applySearch(''); input.focus(); });
+
       } catch (e) {
         list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
       }
