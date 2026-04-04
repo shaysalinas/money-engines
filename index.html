@@ -1284,30 +1284,59 @@
       renderPage(1);
     }
 
+    function wireSearch() {
+      const input    = document.getElementById('episode-search');
+      const clearBtn = document.getElementById('search-clear');
+      input.addEventListener('input', () => applySearch(input.value.trim()));
+      clearBtn.addEventListener('click', () => { input.value = ''; applySearch(''); input.focus(); });
+    }
+
+    function finish(episodes, label) {
+      allEpisodes    = episodes;
+      activeEpisodes = episodes;
+      const titleEl  = document.querySelector('.episodes .section-title');
+      if (titleEl) titleEl.textContent = label;
+      renderPage(1);
+      wireSearch();
+    }
+
+    async function loadViaRSS() {
+      const res = await fetch('/.netlify/functions/rss-proxy');
+      if (!res.ok) throw new Error('RSS proxy HTTP ' + res.status);
+      const xml = await res.text();
+      const eps = parseRSS(xml);
+      if (!eps.length) throw new Error('empty RSS');
+      return eps;
+    }
+
+    async function loadViaiTunes() {
+      const res  = await fetch('https://itunes.apple.com/lookup?id=1340384819&entity=podcastEpisode&limit=200&country=il');
+      if (!res.ok) throw new Error('iTunes HTTP ' + res.status);
+      const data = await res.json();
+      return data.results
+        .filter(r => r.wrapperType === 'podcastEpisode')
+        .map(ep => ({
+          title:  ep.trackName || '',
+          desc:   (ep.description || ep.shortDescription || '').trim().substring(0, 220),
+          date:   ep.releaseDate,
+          link:   ep.trackViewUrl || ep.episodeUrl || '#',
+          epNum:  null,
+        }));
+    }
+
     async function loadEpisodes() {
       const list = document.getElementById('episodes-list');
       try {
-        const res = await fetch('/.netlify/functions/rss-proxy');
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const xml = await res.text();
-
-        allEpisodes    = parseRSS(xml);
-        activeEpisodes = allEpisodes;
-        if (!allEpisodes.length) throw new Error('no episodes');
-
-        // update section title with real count
-        const titleEl = document.querySelector('.episodes .section-title');
-        if (titleEl) titleEl.textContent = `כל ${allEpisodes.length} פרקי הפודקאסט`;
-
-        renderPage(1);
-
-        const input    = document.getElementById('episode-search');
-        const clearBtn = document.getElementById('search-clear');
-        input.addEventListener('input', () => applySearch(input.value.trim()));
-        clearBtn.addEventListener('click', () => { input.value = ''; applySearch(''); input.focus(); });
-
-      } catch (e) {
-        list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
+        const eps = await loadViaRSS();
+        finish(eps, `כל ${eps.length} פרקי הפודקאסט`);
+      } catch (e1) {
+        try {
+          const eps = await loadViaiTunes();
+          if (!eps.length) throw new Error('empty');
+          finish(eps, `${eps.length} הפרקים האחרונים`);
+        } catch (e2) {
+          list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
+        }
       }
     }
 
