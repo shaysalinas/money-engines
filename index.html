@@ -716,6 +716,62 @@
       margin-bottom: 30px;
     }
 
+    /* ── EPISODE SEARCH ── */
+    .episode-search-wrap {
+      position: relative;
+      margin-bottom: 32px;
+    }
+
+    .episode-search-wrap input {
+      width: 100%;
+      padding: 14px 48px 14px 20px;
+      border-radius: 50px;
+      border: 2px solid #2a2a2a;
+      background: #1a1a1a;
+      color: var(--white);
+      font-size: 1rem;
+      font-family: inherit;
+      outline: none;
+      direction: rtl;
+      transition: border-color 0.2s;
+    }
+
+    .episode-search-wrap input::placeholder { color: #555; }
+    .episode-search-wrap input:focus { border-color: var(--red); }
+
+    .episode-search-wrap .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #555;
+      font-size: 1.1rem;
+      pointer-events: none;
+    }
+
+    .episode-search-wrap .search-clear {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+      font-size: 1rem;
+      cursor: pointer;
+      background: none;
+      border: none;
+      padding: 4px;
+      display: none;
+    }
+
+    .search-results-info {
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 20px;
+      text-align: right;
+    }
+
+    .search-results-info span { color: var(--red-light); font-weight: 700; }
+
     /* ── DIVIDER ── */
     .divider {
       width: 60px;
@@ -1014,6 +1070,12 @@
       <div class="section-tag">ארכיון פרקים</div>
       <h2 class="section-title">100 הפרקים האחרונים</h2>
       <div class="divider"></div>
+      <div class="episode-search-wrap">
+        <input type="text" id="episode-search" placeholder="חיפוש פרק לפי שם או נושא..." autocomplete="off" />
+        <span class="search-icon">🔍</span>
+        <button class="search-clear" id="search-clear" title="נקה חיפוש">✕</button>
+      </div>
+      <div class="search-results-info" id="search-info" style="display:none"></div>
       <div class="episodes-grid" id="episodes-list">
         <div class="ep-loading">
           טוען פרקים...
@@ -1102,8 +1164,9 @@
     const LATEST_EP   = 374;
     const PER_PAGE    = 10;
 
-    let allEpisodes = [];
-    let currentPage = 1;
+    let allEpisodes    = [];
+    let activeEpisodes = []; // filtered or full list
+    let currentPage    = 1;
 
     function formatDate(str) {
       if (!str) return '';
@@ -1122,8 +1185,8 @@
       const pagEl    = document.getElementById('pagination');
       const infoEl   = document.getElementById('page-info');
       const start    = (page - 1) * PER_PAGE;
-      const slice    = allEpisodes.slice(start, start + PER_PAGE);
-      const total    = allEpisodes.length;
+      const slice    = activeEpisodes.slice(start, start + PER_PAGE);
+      const total    = activeEpisodes.length;
       const totalPages = Math.ceil(total / PER_PAGE);
 
       // render cards
@@ -1185,11 +1248,42 @@
     }
 
     function goToPage(page) {
-      const totalPages = Math.ceil(allEpisodes.length / PER_PAGE);
+      const totalPages = Math.ceil(activeEpisodes.length / PER_PAGE);
       if (page < 1 || page > totalPages) return;
       currentPage = page;
       renderPage(currentPage);
       document.getElementById('episodes').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function applySearch(query) {
+      const infoEl  = document.getElementById('search-info');
+      const clearBtn = document.getElementById('search-clear');
+      const searchIcon = document.querySelector('.search-icon');
+
+      if (!query) {
+        activeEpisodes = allEpisodes;
+        infoEl.style.display  = 'none';
+        clearBtn.style.display = 'none';
+        searchIcon.style.display = 'block';
+      } else {
+        const q = query.toLowerCase();
+        activeEpisodes = allEpisodes.filter(ep => {
+          const title = (ep.trackName || '').toLowerCase();
+          const desc  = (ep.description || ep.shortDescription || '').toLowerCase();
+          return title.includes(q) || desc.includes(q);
+        });
+        clearBtn.style.display = 'block';
+        searchIcon.style.display = 'none';
+        infoEl.style.display = 'block';
+        if (activeEpisodes.length) {
+          infoEl.innerHTML = `נמצאו <span>${activeEpisodes.length}</span> פרקים עבור: "${query}"`;
+        } else {
+          infoEl.innerHTML = `לא נמצאו פרקים עבור: "<span>${query}</span>"`;
+        }
+      }
+
+      currentPage = 1;
+      renderPage(1);
     }
 
     async function loadEpisodes() {
@@ -1200,9 +1294,20 @@
         if (!res.ok) throw new Error('HTTP ' + res.status);
         const data = await res.json();
 
-        allEpisodes = data.results.filter(r => r.wrapperType === 'podcastEpisode');
+        allEpisodes    = data.results.filter(r => r.wrapperType === 'podcastEpisode');
+        activeEpisodes = allEpisodes;
         if (!allEpisodes.length) throw new Error('no episodes');
         renderPage(1);
+
+        // wire up search
+        const input    = document.getElementById('episode-search');
+        const clearBtn = document.getElementById('search-clear');
+        input.addEventListener('input', () => applySearch(input.value.trim()));
+        clearBtn.addEventListener('click', () => {
+          input.value = '';
+          applySearch('');
+          input.focus();
+        });
       } catch (e) {
         list.innerHTML = '<p style="color:#888;text-align:center;padding:40px 0">לא ניתן לטעון פרקים כרגע. <a href="https://open.spotify.com/show/3wjWZWBm6DK6Qim3uDRUmd" style="color:var(--red-light)">האזינו בספוטיפיי</a></p>';
       }
