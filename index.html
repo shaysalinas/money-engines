@@ -219,6 +219,8 @@
       transition: all 0.25s;
       cursor: pointer;
       border: none;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .btn-primary {
@@ -334,7 +336,7 @@
       padding: 18px 20px;
       transition: background 0.2s;
     }
-    .topic-item:hover { background: rgba(192,42,42,0.15); }
+    .topic-item:hover { background: rgba(192,42,42,0.08); }
 
     .topic-icon {
       font-size: 1.6rem;
@@ -979,8 +981,8 @@
     /* ── ACCESSIBILITY BUTTON ── */
     .a11y-btn {
       position: fixed;
-      bottom: 30px;
-      left: 30px;
+      top: 80px;
+      left: 20px;
       width: 52px;
       height: 52px;
       border-radius: 50%;
@@ -1001,8 +1003,8 @@
     /* ── ACCESSIBILITY PANEL ── */
     .a11y-panel {
       position: fixed;
-      bottom: 92px;
-      left: 30px;
+      top: 142px;
+      left: 20px;
       width: 260px;
       background: #1c1c1c;
       border: 1px solid #333;
@@ -1141,13 +1143,13 @@
 
   <!-- HERO -->
   <section class="hero" aria-label="כותרת ראשית">
-    <div class="hero-badge">🎙️ פודקאסט כלכלי מבית כלכליסט</div>
     <img
       class="hero-logo"
       src="logo-studio.jpg"
       alt="מנועי הכסף"
     />
     <h1>מנועי <span>הכסף</span></h1>
+    <p style="font-size:0.95rem;color:#888;margin-bottom:16px;margin-top:-12px;letter-spacing:0.05em;">מאז 2018</p>
     <p>
       הפודקאסט הכלכלי המוביל מבית כלכליסט. שי סלינס ואורי גרינפלד מנתחים
       את שוקי הון, כלכלה גלובלית ומה שמניע את הכסף —
@@ -1167,18 +1169,8 @@
       <div class="stat-label">פרקים שבועיים</div>
     </div>
     <div class="stat">
-      <div class="stat-num">עשרות אלפי</div>
+      <div class="stat-num">מעל ל-10K</div>
       <div class="stat-label">האזנות לפרק</div>
-    </div>
-    <div class="stat">
-      <div class="stat-num">מאז 2018</div>
-      <div class="stat-label">פודקאסט ותיק ומוביל</div>
-    </div>
-    <div class="stat">
-      <a href="https://www.calcalist.co.il/market/category/5357" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;">
-        <div class="stat-num">כלכליסט</div>
-        <div class="stat-label">לאתר הפודקאסט ←</div>
-      </a>
     </div>
   </div>
 
@@ -1337,7 +1329,7 @@
         </a>
         <a href="https://podcasts.apple.com/il/podcast/%D7%9E%D7%A0%D7%95%D7%A2%D7%99-%D7%94%D7%9B%D7%A1%D7%A3/id1340384819" target="_blank" rel="noopener" class="platform-card" aria-label="האזינו למנועי הכסף ב-Apple Podcasts (נפתח בחלון חדש)">
           <div class="platform-icon">
-            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="apple-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F452FF"/><stop offset="100%" style="stop-color:#832BC1"/></linearGradient></defs><rect width="24" height="24" rx="5.5" fill="url(#apple-grad)"/><path d="M12 2.4a5.16 5.16 0 0 1 5.16 5.16c0 1.37-.535 2.614-1.404 3.534.013.198.02.398.02.6C15.776 14.77 14.1 17.1 12 17.1s-3.776-2.33-3.776-5.406c0-.202.007-.402.02-.6A5.137 5.137 0 0 1 6.84 7.56 5.16 5.16 0 0 1 12 2.4zm0 2.16a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm0 1.44a1.56 1.56 0 1 1 0 3.12 1.56 1.56 0 0 1 0-3.12zm-.72 10.56h1.44v4.8h-1.44v-4.8z" fill="white"/></svg>
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="apple-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#F452FF"/><stop offset="100%" style="stop-color:#832BC1"/></linearGradient></defs><rect width="24" height="24" rx="5.5" fill="url(#apple-grad)"/><rect x="10" y="3.5" width="4" height="7.5" rx="2" fill="white"/><path d="M7.5 11a4.5 4.5 0 0 0 9 0" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/><line x1="12" y1="15.5" x2="12" y2="18.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><line x1="9.5" y1="18.5" x2="14.5" y2="18.5" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg>
           </div>
           <div class="platform-name">Apple Podcasts</div>
           <div class="platform-cta">האזן עכשיו ←</div>
