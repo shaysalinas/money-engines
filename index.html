@@ -200,6 +200,25 @@
       margin-bottom: 44px;
     }
 
+    .hero-description { margin-bottom: 0; }
+
+    .hero-tagline-divider {
+      width: 32px;
+      height: 2px;
+      background: var(--red);
+      margin: 1.75rem 0 1rem;
+    }
+
+    .hero-tagline {
+      font-size: 20px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.95);
+      letter-spacing: 0.3px;
+      line-height: 1.4;
+      margin: 0 0 2rem;
+      max-width: 580px;
+    }
+
     .cta-group {
       display: flex;
       flex-wrap: wrap;
@@ -1178,11 +1197,13 @@
     />
     <h1>מנועי <span>הכסף</span></h1>
     <p style="font-size:0.95rem;color:#888;margin-bottom:16px;margin-top:-12px;letter-spacing:0.05em;">מאז 2018</p>
-    <p>
+    <p class="hero-description">
       הפודקאסט הכלכלי המוביל מבית כלכליסט. שי סלינס ואורי גרינפלד מנתחים
       את שוקי הון, כלכלה גלובלית ומה שמניע את הכסף —
       בעברית, בגובה העיניים.
     </p>
+    <div class="hero-tagline-divider" aria-hidden="true"></div>
+    <p class="hero-tagline">בלי אג׳נדה - רק כלכלה</p>
     <div class="cta-group">
       <a href="#platforms" class="btn btn-primary">
         <span>🎧</span> האזינו עכשיו
