@@ -302,59 +302,6 @@
       line-height: 1.7;
     }
 
-    /* ── ABOUT ── */
-    .about { background: #141414; }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      align-items: center;
-      margin-top: 50px;
-    }
-
-    .about-text p {
-      color: #bbb;
-      font-size: 1.05rem;
-      line-height: 1.8;
-      margin-bottom: 18px;
-    }
-
-    .about-topics {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .topic-item {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      background: rgba(192,42,42,0.08);
-      border: 1px solid rgba(192,42,42,0.2);
-      border-radius: 12px;
-      padding: 18px 20px;
-      transition: background 0.2s;
-    }
-    .topic-item:hover { background: rgba(192,42,42,0.08); }
-
-    .topic-icon {
-      font-size: 1.6rem;
-      min-width: 36px;
-      text-align: center;
-    }
-
-    .topic-text h4 {
-      font-size: 1rem;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .topic-text p {
-      font-size: 0.88rem;
-      color: #999;
-      line-height: 1.5;
-    }
-
     /* ── HOSTS ── */
     .hosts { background: var(--black); }
 
@@ -1182,7 +1129,6 @@
       header { padding: 12px 20px; }
       nav { display: none; }
 
-      .about-grid,
       .hosts-grid { grid-template-columns: 1fr; gap: 30px; }
 
       .stats-bar { gap: 30px; }
@@ -1215,7 +1161,6 @@
       <span>מנועי הכסף</span>
     </a>
     <nav aria-label="ניווט ראשי">
-      <a href="#about">על הפודקאסט</a>
       <a href="#hosts">המגישים</a>
       <a href="#episodes">פרקים</a>
       <a href="#platforms">האזינו</a>
@@ -1266,64 +1211,6 @@
     </div>
     <div class="ranking-sub">Apple Podcasts ישראל</div>
   </div>
-
-  <!-- ABOUT -->
-  <section class="about">
-    <div class="section-inner">
-      <div class="section-tag">על הפודקאסט</div>
-      <h2 class="section-title">מה מניע את הכסף שלך?</h2>
-      <div class="divider"></div>
-      <div class="about-grid">
-        <div class="about-text">
-          <p>
-            מנועי הכסף הוא הפודקאסט הכלכלי של כלכליסט — כבר 376 פרקים שבועיים,
-            עם עשרות אלפי האזנות לכל פרק.
-          </p>
-          <p>
-            שי ואורי מנתחים כל שבוע את האירועים הכלכליים הגדולים: מה קורה בשוקי
-            ההון בארץ ובעולם, למה הריבית עולה או יורדת, ואיך כל זה משפיע
-            על הכסף שלך.
-          </p>
-          <p>
-            ניתוחים עמוקים, שפה נגישה, בלי אג'נדה — רק כלכלה.
-          </p>
-          <a href="#platforms" class="btn btn-primary" style="margin-top: 12px;">
-            <span>🎧</span> התחל להאזין
-          </a>
-        </div>
-        <div class="about-topics">
-          <div class="topic-item">
-            <div class="topic-icon">📈</div>
-            <div class="topic-text">
-              <h4>שוקי הון</h4>
-              <p>ניתוח שבועי של מה שקורה בבורסות בארץ ובעולם</p>
-            </div>
-          </div>
-          <div class="topic-item">
-            <div class="topic-icon">₿</div>
-            <div class="topic-text">
-              <h4>קריפטו ובלוקצ'יין</h4>
-              <p>הבנה מעמיקה של עולם המטבעות הדיגיטליים</p>
-            </div>
-          </div>
-          <div class="topic-item">
-            <div class="topic-icon">🏦</div>
-            <div class="topic-text">
-              <h4>מאקרו וכלכלה גלובלית</h4>
-              <p>איך החלטות של בנקים מרכזיים משפיעות עליך</p>
-            </div>
-          </div>
-          <div class="topic-item">
-            <div class="topic-icon">💡</div>
-            <div class="topic-text">
-              <h4>אסטרטגיות השקעה</h4>
-              <p>כלים מעשיים לניהול תיק השקעות נכון</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- HOSTS -->
   <section class="hosts" id="hosts">
