@@ -885,6 +885,58 @@
 
     .search-results-info span { color: var(--red-light); font-weight: 700; }
 
+    /* ── AUTOCOMPLETE DROPDOWN ── */
+    .autocomplete-dropdown {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      left: 0;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 16px;
+      overflow: hidden;
+      z-index: 999;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+      display: none;
+    }
+
+    .autocomplete-dropdown.open { display: block; }
+
+    .autocomplete-item {
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      color: #ccc;
+      border-bottom: 1px solid #222;
+      transition: background 0.15s;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .autocomplete-item:last-child { border-bottom: none; }
+
+    .autocomplete-item:hover,
+    .autocomplete-item.active {
+      background: #2a2a2a;
+      color: #fff;
+    }
+
+    .autocomplete-item mark {
+      background: none;
+      color: var(--red-light);
+      font-weight: 700;
+    }
+
+    .autocomplete-fuzzy-note {
+      padding: 8px 20px;
+      font-size: 0.75rem;
+      color: #555;
+      text-align: right;
+      background: #111;
+    }
+
     /* ── DIVIDER ── */
     .divider {
       width: 60px;
@@ -1343,6 +1395,7 @@
         <input type="text" id="episode-search" placeholder="חיפוש פרק לפי שם או נושא..." autocomplete="off" aria-label="חיפוש פרקים" role="searchbox" />
         <span class="search-icon" aria-hidden="true">🔍</span>
         <button class="search-clear" id="search-clear" title="נקה חיפוש" aria-label="נקה חיפוש">✕</button>
+        <div class="autocomplete-dropdown" id="autocomplete-dropdown"></div>
       </div>
       <div class="search-results-info" id="search-info" style="display:none"></div>
       <div class="episodes-grid" id="episodes-list">
@@ -1563,6 +1616,87 @@
       document.getElementById('episodes').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
+    /* ── FUZZY SEARCH HELPERS ── */
+    function levenshtein(a, b) {
+      const m = a.length, n = b.length;
+      const dp = Array.from({length: m+1}, (_, i) => Array.from({length: n+1}, (_, j) => j === 0 ? i : 0));
+      for (let j = 1; j <= n; j++) dp[0][j] = j;
+      for (let i = 1; i <= m; i++)
+        for (let j = 1; j <= n; j++)
+          dp[i][j] = a[i-1] === b[j-1] ? dp[i-1][j-1] : 1 + Math.min(dp[i-1][j], dp[i][j-1], dp[i-1][j-1]);
+      return dp[m][n];
+    }
+
+    function fuzzyMatch(text, query) {
+      const t = text.toLowerCase(), q = query.toLowerCase();
+      if (t.includes(q)) return { match: true, fuzzy: false };
+      // check every substring of length q.length ± 2
+      const words = t.split(/\s+/);
+      for (const word of words) {
+        if (word.length < 2) continue;
+        const dist = levenshtein(word.substring(0, Math.min(word.length, q.length + 2)), q);
+        if (dist <= Math.max(1, Math.floor(q.length / 4))) return { match: true, fuzzy: true };
+      }
+      // also check sliding window over full text
+      for (let i = 0; i <= t.length - q.length + 1; i++) {
+        const slice = t.substring(i, i + q.length);
+        if (levenshtein(slice, q) <= Math.max(1, Math.floor(q.length / 5))) return { match: true, fuzzy: true };
+      }
+      return { match: false, fuzzy: false };
+    }
+
+    function highlightMatch(text, query) {
+      const idx = text.toLowerCase().indexOf(query.toLowerCase());
+      if (idx === -1) return text;
+      return text.substring(0, idx) + '<mark>' + text.substring(idx, idx + query.length) + '</mark>' + text.substring(idx + query.length);
+    }
+
+    /* ── AUTOCOMPLETE ── */
+    let acSelected = -1;
+
+    function buildAutocomplete(query) {
+      const dropdown = document.getElementById('autocomplete-dropdown');
+      if (!query || query.length < 2) { dropdown.classList.remove('open'); return; }
+
+      const q = query.toLowerCase();
+      const exact   = allEpisodes.filter(ep => ep.title.toLowerCase().includes(q)).slice(0, 6);
+      const fuzzy   = exact.length < 4
+        ? allEpisodes.filter(ep => !ep.title.toLowerCase().includes(q) && fuzzyMatch(ep.title, query).match).slice(0, 4 - exact.length)
+        : [];
+      const suggestions = [...exact, ...fuzzy];
+
+      if (!suggestions.length) { dropdown.classList.remove('open'); return; }
+
+      dropdown.innerHTML = suggestions.map((ep, i) => {
+        const isFuzzy = !ep.title.toLowerCase().includes(q);
+        return `<div class="autocomplete-item${isFuzzy ? ' fuzzy' : ''}" data-title="${ep.title.replace(/"/g,'&quot;')}" data-idx="${i}">
+          ${highlightMatch(ep.title, query)}${isFuzzy ? ' <small style="color:#555;font-size:0.75em">(הצעה)</small>' : ''}
+        </div>`;
+      }).join('');
+
+      acSelected = -1;
+      dropdown.classList.add('open');
+
+      dropdown.querySelectorAll('.autocomplete-item').forEach(item => {
+        item.addEventListener('mousedown', e => {
+          e.preventDefault();
+          const title = item.dataset.title;
+          document.getElementById('episode-search').value = title;
+          dropdown.classList.remove('open');
+          applySearch(title);
+        });
+      });
+    }
+
+    function moveAutocomplete(dir) {
+      const dropdown = document.getElementById('autocomplete-dropdown');
+      const items = dropdown.querySelectorAll('.autocomplete-item');
+      if (!items.length) return;
+      items[acSelected]?.classList.remove('active');
+      acSelected = (acSelected + dir + items.length) % items.length;
+      items[acSelected].classList.add('active');
+    }
+
     function applySearch(query) {
       const infoEl     = document.getElementById('search-info');
       const clearBtn   = document.getElementById('search-clear');
@@ -1574,16 +1708,30 @@
         clearBtn.style.display   = 'none';
         searchIcon.style.display = 'block';
       } else {
-        const q    = query.toLowerCase();
-        activeEpisodes = allEpisodes.filter(ep =>
+        const q = query.toLowerCase();
+        // exact matches first
+        let exact = allEpisodes.filter(ep =>
           ep.title.toLowerCase().includes(q) || ep.desc.toLowerCase().includes(q)
         );
+        let isFuzzy = false;
+        if (!exact.length) {
+          // fallback: fuzzy
+          exact = allEpisodes.filter(ep =>
+            fuzzyMatch(ep.title, query).match || fuzzyMatch(ep.desc, query).match
+          );
+          isFuzzy = exact.length > 0;
+        }
+        activeEpisodes = exact;
         clearBtn.style.display   = 'block';
         searchIcon.style.display = 'none';
         infoEl.style.display     = 'block';
-        infoEl.innerHTML = activeEpisodes.length
-          ? `נמצאו <span>${activeEpisodes.length}</span> פרקים עבור: "${query}"`
-          : `לא נמצאו פרקים עבור: "<span>${query}</span>"`;
+        if (activeEpisodes.length) {
+          infoEl.innerHTML = isFuzzy
+            ? `תוצאות דומות ל: "<span>${query}</span>" — נמצאו <span>${activeEpisodes.length}</span> פרקים`
+            : `נמצאו <span>${activeEpisodes.length}</span> פרקים עבור: "${query}"`;
+        } else {
+          infoEl.innerHTML = `לא נמצאו פרקים עבור: "<span>${query}</span>"`;
+        }
       }
 
       currentPage = 1;
@@ -1593,8 +1741,38 @@
     function wireSearch() {
       const input    = document.getElementById('episode-search');
       const clearBtn = document.getElementById('search-clear');
-      input.addEventListener('input', () => applySearch(input.value.trim()));
-      clearBtn.addEventListener('click', () => { input.value = ''; applySearch(''); input.focus(); });
+      const dropdown = document.getElementById('autocomplete-dropdown');
+
+      input.addEventListener('input', () => {
+        const q = input.value.trim();
+        applySearch(q);
+        buildAutocomplete(q);
+      });
+
+      input.addEventListener('keydown', e => {
+        if (!dropdown.classList.contains('open')) return;
+        if (e.key === 'ArrowDown')  { e.preventDefault(); moveAutocomplete(1); }
+        if (e.key === 'ArrowUp')    { e.preventDefault(); moveAutocomplete(-1); }
+        if (e.key === 'Enter') {
+          const active = dropdown.querySelector('.autocomplete-item.active');
+          if (active) {
+            e.preventDefault();
+            input.value = active.dataset.title;
+            dropdown.classList.remove('open');
+            applySearch(input.value);
+          }
+        }
+        if (e.key === 'Escape') dropdown.classList.remove('open');
+      });
+
+      input.addEventListener('blur', () => setTimeout(() => dropdown.classList.remove('open'), 150));
+
+      clearBtn.addEventListener('click', () => {
+        input.value = '';
+        dropdown.classList.remove('open');
+        applySearch('');
+        input.focus();
+      });
     }
 
     function finish(episodes) {
