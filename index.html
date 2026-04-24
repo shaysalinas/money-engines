@@ -1688,8 +1688,6 @@
       activeEpisodes = episodes;
       const titleEl  = document.querySelector('.episodes .section-title');
       if (titleEl) titleEl.textContent = 'כל פרקי הפודקאסט';
-      const countEl = document.getElementById('episode-count');
-      if (countEl && episodes.length > 0) countEl.textContent = episodes.length;
       renderPage(1);
       wireSearch();
     }
