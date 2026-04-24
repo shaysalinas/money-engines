@@ -281,6 +281,8 @@
       font-size: 2rem;
       font-weight: 800;
       color: var(--white);
+      /* prevent width jitter as digits change during count-up animation */
+      font-variant-numeric: tabular-nums;
     }
     .stat-label {
       font-size: 0.85rem;
@@ -1872,6 +1874,71 @@
         }
       });
     });
+
+    /* ── COUNT-UP ANIMATION ──
+       Reusable: animates any element from 0 up to a target integer,
+       triggered when the element scrolls into view. Runs only once per
+       page load, respects prefers-reduced-motion, and preserves the
+       final value for assistive tech via aria-label. */
+    function animateCountUp(el, target, durationMs = 1800) {
+      // ease-out cubic: fast start, gentle deceleration toward the end
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Keep the final number available to screen readers regardless of
+      // visual animation state, and announce changes politely (once).
+      el.setAttribute('aria-live', 'polite');
+      el.setAttribute('aria-label', String(target));
+
+      if (prefersReduced) {
+        el.textContent = String(target);
+        return;
+      }
+
+      const startTs = performance.now();
+      el.textContent = '0';
+
+      function tick(now) {
+        const elapsed = now - startTs;
+        const progress = Math.min(elapsed / durationMs, 1);
+        const value = Math.floor(easeOutCubic(progress) * target);
+        el.textContent = String(value);
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          el.textContent = String(target); // snap to exact final value
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    /* Attach a one-shot IntersectionObserver to any element that should
+       count up. Reads the target from the element's current textContent
+       so the source of truth stays in the DOM. Fires when ≥30% visible. */
+    function observeCountUp(el) {
+      if (!el) return;
+      const target = parseInt(el.textContent.trim(), 10);
+      if (!Number.isFinite(target)) return;
+
+      // Show 0 up front so the animation starts from a consistent state,
+      // but aria-label (set inside animateCountUp) keeps the real value
+      // available to screen readers immediately.
+      el.setAttribute('aria-label', String(target));
+
+      const io = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            animateCountUp(el, target);
+            observer.unobserve(entry.target); // one-shot: never re-trigger
+          }
+        });
+      }, { threshold: 0.3 });
+
+      io.observe(el);
+    }
+
+    observeCountUp(document.getElementById('episode-count'));
 
     /* ── ACTIVE NAV ON SCROLL ── */
     const sections = document.querySelectorAll('section[id], div[id]');
