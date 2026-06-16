@@ -1216,7 +1216,7 @@
   <!-- STATS BAR -->
   <div class="stats-bar">
     <div class="stat">
-      <div class="stat-num" id="episode-count">383</div>
+      <div class="stat-num" id="episode-count">+380</div>
       <div class="stat-label">פרקים שבועיים</div>
     </div>
     <div class="stat">
@@ -1880,34 +1880,35 @@
        triggered when the element scrolls into view. Runs only once per
        page load, respects prefers-reduced-motion, and preserves the
        final value for assistive tech via aria-label. */
-    function animateCountUp(el, target, durationMs = 1800) {
+    function animateCountUp(el, target, prefix = '', suffix = '', durationMs = 1800) {
       // ease-out cubic: fast start, gentle deceleration toward the end
       const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
       const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const finalText = prefix + target + suffix; // e.g. "+380"
 
-      // Keep the final number available to screen readers regardless of
+      // Keep the final value available to screen readers regardless of
       // visual animation state, and announce changes politely (once).
       el.setAttribute('aria-live', 'polite');
-      el.setAttribute('aria-label', String(target));
+      el.setAttribute('aria-label', finalText);
 
       if (prefersReduced) {
-        el.textContent = String(target);
+        el.textContent = finalText;
         return;
       }
 
       const startTs = performance.now();
-      el.textContent = '0';
+      el.textContent = prefix + '0' + suffix;
 
       function tick(now) {
         const elapsed = now - startTs;
         const progress = Math.min(elapsed / durationMs, 1);
         const value = Math.floor(easeOutCubic(progress) * target);
-        el.textContent = String(value);
+        el.textContent = prefix + value + suffix;
         if (progress < 1) {
           requestAnimationFrame(tick);
         } else {
-          el.textContent = String(target); // snap to exact final value
+          el.textContent = finalText; // snap to exact final value
         }
       }
       requestAnimationFrame(tick);
@@ -1915,21 +1916,25 @@
 
     /* Attach a one-shot IntersectionObserver to any element that should
        count up. Reads the target from the element's current textContent
-       so the source of truth stays in the DOM. Fires when ≥30% visible. */
+       so the source of truth stays in the DOM. Any non-digit characters
+       around the number (e.g. a leading "+") are preserved as prefix/suffix.
+       Fires when ≥30% visible. */
     function observeCountUp(el) {
       if (!el) return;
-      const target = parseInt(el.textContent.trim(), 10);
+      const raw = el.textContent.trim();
+      const m = raw.match(/^(\D*)(\d+)(\D*)$/); // prefix / digits / suffix
+      if (!m) return;
+      const prefix = m[1], target = parseInt(m[2], 10), suffix = m[3];
       if (!Number.isFinite(target)) return;
 
-      // Show 0 up front so the animation starts from a consistent state,
-      // but aria-label (set inside animateCountUp) keeps the real value
-      // available to screen readers immediately.
-      el.setAttribute('aria-label', String(target));
+      // Keep the real value available to assistive tech immediately,
+      // before the visual animation runs.
+      el.setAttribute('aria-label', raw);
 
       const io = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            animateCountUp(el, target);
+            animateCountUp(el, target, prefix, suffix);
             observer.unobserve(entry.target); // one-shot: never re-trigger
           }
         });
