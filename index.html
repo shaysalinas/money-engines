@@ -1306,23 +1306,6 @@
     /* leave room so player never hides the footer */
     body.player-active { padding-bottom: 84px; }
 
-    /* ══════════ NEW: TOPIC FILTER CHIPS ══════════ */
-    .topic-filters {
-      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
-      margin: 26px 0 4px;
-    }
-    .topic-chip {
-      background: #1c1c1c; color: #aaa;
-      border: 1px solid #2e2e2e; border-radius: 100px;
-      padding: 7px 16px; font-size: 0.85rem; font-weight: 700;
-      cursor: pointer; font-family: inherit;
-      transition: all 0.18s;
-    }
-    .topic-chip:hover { border-color: var(--red); color: #fff; }
-    .topic-chip.active {
-      background: var(--red); color: #fff; border-color: var(--red);
-    }
-
     /* ══════════ NEW: EPISODE CARD EXTRAS (play/share/expand) ══════════ */
     .episode-card { position: relative; }
     .episode-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
@@ -1534,7 +1517,6 @@
         <button class="search-clear" id="search-clear" title="נקה חיפוש" aria-label="נקה חיפוש">✕</button>
         <div class="autocomplete-dropdown" id="autocomplete-dropdown"></div>
       </div>
-      <div class="topic-filters" id="topic-filters" role="group" aria-label="סינון פרקים לפי נושא"></div>
       <div class="search-results-info" id="search-info" style="display:none"></div>
       <div class="episodes-grid" id="episodes-list">
         <div class="ep-loading">
@@ -1955,7 +1937,6 @@
 
       input.addEventListener('input', () => {
         const q = input.value.trim();
-        if (q) resetTopicChips();
         applySearch(q);
         buildAutocomplete(q);
       });
@@ -1992,7 +1973,6 @@
       const titleEl  = document.querySelector('.episodes .section-title');
       if (titleEl) titleEl.textContent = 'כל פרקי הפודקאסט';
       populateFeatured(episodes[0]);
-      buildTopicFilters();
       updateEpisodeCount(episodes.length);
       renderPage(1);
       wireSearch();
@@ -2169,57 +2149,6 @@
       const expanded = desc.classList.toggle('expanded');
       desc.textContent = expanded ? ep.fullDesc : ep.desc + '…';
       if (btn) btn.textContent = expanded ? 'הצג פחות ▴' : 'קרא עוד ▾';
-    }
-
-    /* ══════════ TOPIC FILTERS ══════════ */
-    const TOPICS = [
-      { label: 'הכל',            keys: null },
-      { label: 'ריבית ובנקים',   keys: ['ריבית', 'הפחת', 'בנק ישראל', 'הפד', 'פדרל', 'נגיד'] },
-      { label: 'שקל ומטבע',      keys: ['שקל', 'דולר', 'מטבע', 'שער החליפין'] },
-      { label: 'בורסה ומניות',   keys: ['בורסה', 'מניה', 'מניות', 'מדד', 'תל אביב', 'וול סטריט', 'נאסד', 'טאואר'] },
-      { label: 'אינפלציה',       keys: ['אינפלציה', 'מדד המחירים', 'יוקר המחיה'] },
-      { label: 'נדל״ן',          keys: ['נדל', 'דירות', 'דיור', 'משכנתא'] },
-      { label: 'בינה מלאכותית',  keys: ['בינה מלאכותית', ' ai', 'צ׳יפ', 'שבבים', 'אנבידיה', 'nvidia'] },
-      { label: 'גלובלי',         keys: ['ארה', 'אירופה', 'סין', 'עולמי', 'גלובל', 'טראמפ', 'מלחמה'] },
-    ];
-
-    function buildTopicFilters() {
-      const wrap = document.getElementById('topic-filters');
-      wrap.innerHTML = TOPICS.map((t, i) =>
-        `<button class="topic-chip${i === 0 ? ' active' : ''}" data-i="${i}">${t.label}</button>`
-      ).join('');
-      wrap.querySelectorAll('.topic-chip').forEach(chip => {
-        chip.addEventListener('click', () => applyTopic(+chip.dataset.i));
-      });
-    }
-    function resetTopicChips() {
-      document.querySelectorAll('.topic-chip').forEach((c, i) => c.classList.toggle('active', i === 0));
-    }
-    function applyTopic(i) {
-      const t = TOPICS[i];
-      document.querySelectorAll('.topic-chip').forEach((c, j) => c.classList.toggle('active', j === i));
-      // clear any active text search
-      const input = document.getElementById('episode-search');
-      input.value = '';
-      document.getElementById('search-clear').style.display = 'none';
-      document.querySelector('.search-icon').style.display = 'block';
-      const infoEl = document.getElementById('search-info');
-
-      if (!t.keys) {
-        activeEpisodes = allEpisodes;
-        infoEl.style.display = 'none';
-      } else {
-        activeEpisodes = allEpisodes.filter(ep => {
-          const hay = (ep.title + ' ' + (ep.fullDesc || ep.desc)).toLowerCase();
-          return t.keys.some(k => hay.includes(k.toLowerCase()));
-        });
-        infoEl.style.display = 'block';
-        infoEl.innerHTML = activeEpisodes.length
-          ? `נושא: <span>${t.label}</span> — נמצאו <span>${activeEpisodes.length}</span> פרקים`
-          : `לא נמצאו פרקים בנושא <span>${t.label}</span>`;
-      }
-      currentPage = 1;
-      renderPage(1);
     }
 
     /* ══════════ SCROLL ENTRANCE ANIMATIONS ══════════ */
