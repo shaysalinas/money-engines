@@ -1168,6 +1168,217 @@
 
       .modal-box { padding: 28px 20px; }
     }
+
+    /* ══════════ NEW: FEATURED LATEST EPISODE ══════════ */
+    .featured {
+      max-width: 1000px;
+      margin: 48px auto 0;
+      padding: 0 24px;
+    }
+    .featured-card {
+      background: linear-gradient(135deg, #1e1414 0%, #1a1a1a 60%);
+      border: 1px solid rgba(193,30,30,0.45);
+      border-radius: 20px;
+      padding: 26px 30px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .featured-card::before {
+      content: '';
+      position: absolute;
+      top: -60px; left: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(193,30,30,0.25), transparent 70%);
+      pointer-events: none;
+    }
+    .featured-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      color: var(--red-light);
+      background: rgba(193,30,30,0.15);
+      border: 1px solid rgba(193,30,30,0.4);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 12px;
+    }
+    .featured-badge .live-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--red-light);
+      animation: pulseDot 1.8s infinite;
+    }
+    @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1);} 50%{opacity:.4;transform:scale(1.4);} }
+    .featured-info { flex: 1; min-width: 0; }
+    .featured-date { font-size: 0.82rem; font-weight: 700; color: #999; margin-bottom: 6px; }
+    .featured-title { font-size: 1.5rem; font-weight: 800; line-height: 1.3; margin-bottom: 8px; }
+    .featured-desc {
+      font-size: 0.9rem; color: #999; line-height: 1.6;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .featured-play-btn {
+      flex-shrink: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px;
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      background: var(--red);
+      border: none; cursor: pointer;
+      color: #fff; font-weight: 800; font-size: 0.72rem;
+      transition: transform 0.15s, background 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 24px rgba(193,30,30,0.4);
+    }
+    .featured-play-btn svg { width: 30px; height: 30px; fill: #fff; margin-right: -3px; }
+    .featured-play-btn:hover { transform: scale(1.06); background: var(--red-light); box-shadow: 0 10px 30px rgba(224,40,40,0.55); }
+
+    /* ══════════ NEW: STICKY PLAYER BAR ══════════ */
+    .player-bar {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 200;
+      background: rgba(16,16,16,0.97);
+      backdrop-filter: blur(14px);
+      border-top: 2px solid var(--red);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      transform: translateY(120%);
+      transition: transform 0.35s cubic-bezier(.2,.8,.2,1);
+      box-shadow: 0 -8px 30px rgba(0,0,0,0.5);
+    }
+    .player-bar.open { transform: translateY(0); }
+    .player-cover {
+      width: 52px; height: 52px; border-radius: 10px; flex-shrink: 0;
+      object-fit: cover; border: 1px solid #333;
+    }
+    .player-toggle {
+      flex-shrink: 0;
+      width: 52px; height: 52px; border-radius: 50%;
+      background: var(--red); border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .player-toggle:hover { background: var(--red-light); transform: scale(1.05); }
+    .player-toggle svg { width: 22px; height: 22px; fill: #fff; }
+    .player-meta { flex-shrink: 0; max-width: 240px; min-width: 0; }
+    .player-label { font-size: 0.68rem; color: var(--red-light); font-weight: 800; letter-spacing: 0.04em; }
+    .player-title {
+      font-size: 0.9rem; font-weight: 700; color: #fff;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .player-progress-wrap { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .player-time { font-size: 0.75rem; color: #888; font-variant-numeric: tabular-nums; flex-shrink: 0; }
+    .player-seek {
+      flex: 1;
+      -webkit-appearance: none; appearance: none;
+      height: 6px; border-radius: 4px;
+      background: #333; cursor: pointer; outline: none;
+    }
+    .player-seek::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--red-light); cursor: pointer; border: 2px solid #fff;
+    }
+    .player-seek::-moz-range-thumb {
+      width: 15px; height: 15px; border-radius: 50%;
+      background: var(--red-light); cursor: pointer; border: 2px solid #fff;
+    }
+    .player-speed {
+      flex-shrink: 0;
+      background: #262626; color: #ccc; border: 1px solid #383838;
+      border-radius: 8px; padding: 6px 10px; font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+    }
+    .player-speed:hover { border-color: var(--red); color: #fff; }
+    .player-close {
+      flex-shrink: 0;
+      background: none; border: none; color: #777; cursor: pointer;
+      font-size: 1.3rem; line-height: 1; padding: 4px;
+    }
+    .player-close:hover { color: #fff; }
+    /* leave room so player never hides the footer */
+    body.player-active { padding-bottom: 84px; }
+
+    /* ══════════ NEW: TOPIC FILTER CHIPS ══════════ */
+    .topic-filters {
+      display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+      margin: 26px 0 4px;
+    }
+    .topic-chip {
+      background: #1c1c1c; color: #aaa;
+      border: 1px solid #2e2e2e; border-radius: 100px;
+      padding: 7px 16px; font-size: 0.85rem; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.18s;
+    }
+    .topic-chip:hover { border-color: var(--red); color: #fff; }
+    .topic-chip.active {
+      background: var(--red); color: #fff; border-color: var(--red);
+    }
+
+    /* ══════════ NEW: EPISODE CARD EXTRAS (play/share/expand) ══════════ */
+    .episode-card { position: relative; }
+    .episode-actions { display: flex; align-items: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+    .ep-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #262626; color: #bbb; border: 1px solid #333;
+      border-radius: 8px; padding: 6px 12px; font-size: 0.78rem; font-weight: 700;
+      cursor: pointer; font-family: inherit; text-decoration: none;
+      transition: all 0.18s;
+    }
+    .ep-btn:hover { border-color: var(--red); color: #fff; background: #2e2020; }
+    .ep-btn svg { width: 14px; height: 14px; fill: currentColor; }
+    .ep-btn.playing { background: var(--red); color: #fff; border-color: var(--red); }
+    .ep-duration { font-size: 0.75rem; color: #666; font-weight: 700; margin-right: auto; }
+    .episode-desc.expanded { -webkit-line-clamp: unset; }
+    .ep-readmore {
+      background: none; border: none; color: var(--red-light);
+      font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit;
+      padding: 4px 0; margin-top: 4px;
+    }
+    .ep-readmore:hover { text-decoration: underline; }
+    .ep-share-menu {
+      display: none; gap: 6px; margin-top: 8px; flex-wrap: wrap;
+    }
+    .ep-share-menu.open { display: flex; }
+    .ep-share-link {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 34px; height: 34px; border-radius: 8px;
+      background: #222; border: 1px solid #333; color: #bbb;
+      transition: all 0.18s;
+    }
+    .ep-share-link:hover { color: #fff; border-color: var(--red); }
+    .ep-share-link svg { width: 17px; height: 17px; fill: currentColor; }
+
+    /* ══════════ NEW: SCROLL ENTRANCE ANIMATIONS ══════════ */
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    }
+    body.a11y-pause-animations .reveal { opacity: 1 !important; transform: none !important; transition: none !important; }
+    body.a11y-pause-animations .live-dot { animation: none !important; }
+
+    /* ══════════ NEW: RESPONSIVE for featured + player ══════════ */
+    @media (max-width: 640px) {
+      .featured-card { flex-direction: column; text-align: center; padding: 24px 20px; }
+      .featured-title { font-size: 1.25rem; }
+      .featured-play-btn { width: 84px; height: 84px; }
+      .player-bar { flex-wrap: wrap; gap: 10px 14px; padding: 10px 14px; }
+      .player-meta { max-width: 55%; order: 1; }
+      .player-toggle { order: 0; }
+      .player-close { order: 2; margin-right: auto; }
+      .player-progress-wrap { order: 3; width: 100%; flex-basis: 100%; }
+      .player-cover { display: none; }
+      body.player-active { padding-bottom: 128px; }
+    }
   </style>
 </head>
 <body id="about">
@@ -1234,6 +1445,22 @@
     </div>
     <div class="ranking-sub">Apple Podcasts ישראל</div>
   </div>
+
+  <!-- FEATURED LATEST EPISODE -->
+  <section class="featured reveal" id="featured" aria-label="הפרק האחרון" style="display:none">
+    <div class="featured-card">
+      <div class="featured-info">
+        <span class="featured-badge"><span class="live-dot" aria-hidden="true"></span> הפרק האחרון</span>
+        <div class="featured-date" id="featured-date"></div>
+        <div class="featured-title" id="featured-title"></div>
+        <div class="featured-desc" id="featured-desc"></div>
+      </div>
+      <button class="featured-play-btn" id="featured-play" aria-label="נגן את הפרק האחרון">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+        <span>נגן עכשיו</span>
+      </button>
+    </div>
+  </section>
 
   <!-- HOSTS -->
   <section class="hosts" id="hosts">
@@ -1307,6 +1534,7 @@
         <button class="search-clear" id="search-clear" title="נקה חיפוש" aria-label="נקה חיפוש">✕</button>
         <div class="autocomplete-dropdown" id="autocomplete-dropdown"></div>
       </div>
+      <div class="topic-filters" id="topic-filters" role="group" aria-label="סינון פרקים לפי נושא"></div>
       <div class="search-results-info" id="search-info" style="display:none"></div>
       <div class="episodes-grid" id="episodes-list">
         <div class="ep-loading">
@@ -1380,6 +1608,26 @@
     </p>
   </footer>
 
+  <!-- STICKY AUDIO PLAYER -->
+  <div class="player-bar" id="player-bar" role="region" aria-label="נגן פרקים">
+    <img class="player-cover" id="player-cover" src="logo-studio.jpg" alt="" />
+    <button class="player-toggle" id="player-toggle" aria-label="נגן / השהה">
+      <svg id="player-toggle-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <div class="player-meta">
+      <div class="player-label">מנועי הכסף</div>
+      <div class="player-title" id="player-title">—</div>
+    </div>
+    <div class="player-progress-wrap">
+      <span class="player-time" id="player-current">0:00</span>
+      <input type="range" class="player-seek" id="player-seek" min="0" max="100" value="0" aria-label="מיקום בפרק" />
+      <span class="player-time" id="player-total">0:00</span>
+    </div>
+    <button class="player-speed" id="player-speed" aria-label="מהירות ניגון">1x</button>
+    <button class="player-close" id="player-close" aria-label="סגור נגן">✕</button>
+    <audio id="audio-el" preload="none"></audio>
+  </div>
+
   <!-- ACCESSIBILITY BUTTON & PANEL -->
   <button class="a11y-btn" id="a11y-btn" aria-label="פתח תפריט נגישות" aria-expanded="false" aria-controls="a11y-panel">
     ♿
@@ -1434,6 +1682,38 @@
     let activeEpisodes = [];
     let currentPage    = 1;
 
+    /* ── SVG ICONS (reused in cards) ── */
+    const ICONS = {
+      play:     '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M8 5v14l11-7z"/></svg>',
+      share:    '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>',
+      whatsapp: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M.057 24l1.687-6.163a11.867 11.867 0 0 1-1.587-5.945C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 0 1 8.413 3.488 11.824 11.824 0 0 1 3.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 0 1-5.688-1.448L.057 24zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884a9.86 9.86 0 0 0 1.512 5.26l-.999 3.648 3.985-1.607zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.767.967-.94 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.096 3.2 5.077 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>',
+      telegram: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>',
+      x:        '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>',
+      copy:     '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>',
+    };
+
+    /* ── DURATION HELPERS ── */
+    function parseDuration(d) {
+      if (d == null || d === '') return null;
+      if (typeof d === 'number') return d;
+      if (/^\d+$/.test(d)) return parseInt(d, 10);
+      const parts = String(d).split(':').map(Number);
+      if (parts.some(isNaN)) return null;
+      return parts.reduce((acc, v) => acc * 60 + v, 0);
+    }
+    function fmtTime(sec) {
+      if (!isFinite(sec) || sec < 0) return '0:00';
+      sec = Math.floor(sec);
+      const h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+      return h > 0
+        ? `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+        : `${m}:${String(s).padStart(2, '0')}`;
+    }
+    function durationLabel(d) {
+      const s = parseDuration(d);
+      return s ? fmtTime(s) : '';
+    }
+
     function formatDate(str) {
       if (!str) return '';
       const d = new Date(str);
@@ -1475,23 +1755,43 @@
 
       list.innerHTML = slice.map((ep, i) => {
         const globalIdx = start + i;
-        const epNum     = ep.epNum != null ? ep.epNum : '';
-        const isLatest  = globalIdx === 0;
-        const numStyle  = isLatest ? 'background:rgba(193,30,30,0.25);border-color:var(--red)' : '';
         const dateStr   = formatDate(ep.date);
+        const durLabel  = durationLabel(ep.duration);
+        const hasMore   = ep.fullDesc && ep.fullDesc.length > ep.desc.length;
+        const shareUrl  = encodeURIComponent(ep.link || '');
+        const shareText = encodeURIComponent(ep.title + ' | מנועי הכסף');
 
         return `
-          <a href="${ep.link}" target="_blank" rel="noopener" class="episode-card">
+          <div class="episode-card" id="ep-card-${globalIdx}">
             <div class="episode-body">
               ${dateStr ? `<div class="episode-date-inline">${dateStr}</div>` : ''}
               <div class="episode-title">${ep.title}</div>
-              <div class="episode-desc">${ep.desc}</div>
+              <div class="episode-desc" id="ep-desc-${globalIdx}">${ep.desc}${hasMore ? '…' : ''}</div>
+              ${hasMore ? `<button class="ep-readmore" id="ep-more-${globalIdx}" onclick="toggleReadMore(${globalIdx})">קרא עוד ▾</button>` : ''}
+              <div class="episode-actions">
+                <button class="ep-btn ep-play-btn" data-audio="${ep.audioUrl || ''}" onclick="playFromActive(${globalIdx})" ${!ep.audioUrl ? 'disabled style="opacity:.45"' : ''}>
+                  ${ICONS.play} נגן כאן
+                </button>
+                <button class="ep-btn" onclick="toggleShare(${globalIdx})" aria-label="שתף פרק">
+                  ${ICONS.share} שתף
+                </button>
+                <a class="ep-btn" href="${ep.link}" target="_blank" rel="noopener">באפליקציה ↗</a>
+                ${durLabel ? `<span class="ep-duration">⏱ ${durLabel}</span>` : ''}
+              </div>
+              <div class="ep-share-menu" id="ep-share-${globalIdx}">
+                <a class="ep-share-link" href="https://wa.me/?text=${shareText}%20${shareUrl}" target="_blank" rel="noopener" aria-label="שתף בוואטסאפ">${ICONS.whatsapp}</a>
+                <a class="ep-share-link" href="https://t.me/share/url?url=${shareUrl}&text=${shareText}" target="_blank" rel="noopener" aria-label="שתף בטלגרם">${ICONS.telegram}</a>
+                <a class="ep-share-link" href="https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}" target="_blank" rel="noopener" aria-label="שתף ב-X">${ICONS.x}</a>
+                <button class="ep-share-link" onclick="copyLink('${(ep.link || '').replace(/'/g, '')}', this)" aria-label="העתק קישור">${ICONS.copy}</button>
+              </div>
             </div>
-            <div class="episode-play" role="img" aria-label="האזן לפרק">
+            <div class="episode-play" onclick="playFromActive(${globalIdx})" role="button" tabindex="0" aria-label="נגן פרק בעמוד"
+                 onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();playFromActive(${globalIdx});}">
               <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
             </div>
-          </a>`;
+          </div>`;
       }).join('');
+      refreshPlayingUI();
 
       pagEl.style.display = 'flex';
       const pages = [];
@@ -1655,6 +1955,7 @@
 
       input.addEventListener('input', () => {
         const q = input.value.trim();
+        if (q) resetTopicChips();
         applySearch(q);
         buildAutocomplete(q);
       });
@@ -1690,8 +1991,40 @@
       activeEpisodes = episodes;
       const titleEl  = document.querySelector('.episodes .section-title');
       if (titleEl) titleEl.textContent = 'כל פרקי הפודקאסט';
+      populateFeatured(episodes[0]);
+      buildTopicFilters();
+      updateEpisodeCount(episodes.length);
       renderPage(1);
       wireSearch();
+    }
+
+    function populateFeatured(latest) {
+      if (!latest) return;
+      const sec = document.getElementById('featured');
+      document.getElementById('featured-title').textContent = latest.title;
+      document.getElementById('featured-desc').textContent  = latest.desc;
+      document.getElementById('featured-date').textContent  = formatDate(latest.date);
+      const btn = document.getElementById('featured-play');
+      if (latest.audioUrl) {
+        btn.onclick = () => playEpisodeObj(latest);
+      } else {
+        btn.onclick = () => window.open(latest.link, '_blank');
+      }
+      sec.style.display = 'block';
+    }
+
+    /* Auto-derive the hero episode count from the real feed so it never
+       needs a manual bump again. Rounds DOWN to the nearest 10 and keeps
+       the "+X" style. Never drops below the number already in the HTML
+       (guards against the iTunes fallback, which is capped at 200). */
+    function updateEpisodeCount(count) {
+      const el = document.getElementById('episode-count');
+      if (!el || !count) return;
+      const floorMatch = el.textContent.match(/(\d+)/);
+      const floor   = floorMatch ? parseInt(floorMatch[1], 10) : 0;
+      const rounded = Math.floor(count / 10) * 10;
+      el.textContent = '+' + Math.max(floor, rounded);
+      observeCountUp(el); // animate from 0 to the (now current) value
     }
 
     async function loadViaRSS() {
@@ -1699,13 +2032,19 @@
       if (!res.ok) throw new Error('RSS proxy HTTP ' + res.status);
       const data = await res.json();
       if (!data.episodes || !data.episodes.length) throw new Error('empty RSS');
-      return data.episodes.map(ep => ({
-        title: ep.title,
-        desc:  stripHtml(ep.desc).substring(0, 220),
-        date:  ep.date,
-        link:  ep.link || '#',
-        epNum: ep.epNum,
-      }));
+      return data.episodes.map(ep => {
+        const full = stripHtml(ep.desc);
+        return {
+          title:    ep.title,
+          desc:     full.substring(0, 220),
+          fullDesc: full,
+          date:     ep.date,
+          link:     ep.link || '#',
+          epNum:    ep.epNum,
+          audioUrl: ep.audioUrl || null,
+          duration: ep.duration || null,
+        };
+      });
     }
 
     async function loadViaiTunes() {
@@ -1714,13 +2053,19 @@
       const data = await res.json();
       return data.results
         .filter(r => r.wrapperType === 'podcastEpisode')
-        .map(ep => ({
-          title:  ep.trackName || '',
-          desc:   (ep.description || ep.shortDescription || '').trim().substring(0, 220),
-          date:   ep.releaseDate,
-          link:   ep.trackViewUrl || ep.episodeUrl || '#',
-          epNum:  null,
-        }));
+        .map(ep => {
+          const full = stripHtml(ep.description || ep.shortDescription || '').trim();
+          return {
+            title:    ep.trackName || '',
+            desc:     full.substring(0, 220),
+            fullDesc: full,
+            date:     ep.releaseDate,
+            link:     ep.trackViewUrl || ep.episodeUrl || '#',
+            epNum:    null,
+            audioUrl: ep.episodeUrl || null,
+            duration: ep.trackTimeMillis ? Math.round(ep.trackTimeMillis / 1000) : null,
+          };
+        });
     }
 
     async function loadEpisodes() {
@@ -1740,6 +2085,156 @@
     }
 
     loadEpisodes();
+
+    /* ══════════ AUDIO PLAYER ══════════ */
+    const audioEl      = document.getElementById('audio-el');
+    const playerBar    = document.getElementById('player-bar');
+    const seekEl       = document.getElementById('player-seek');
+    const curEl        = document.getElementById('player-current');
+    const totalEl      = document.getElementById('player-total');
+    const toggleIcon   = document.getElementById('player-toggle-icon');
+    const PLAY_PATH    = 'M8 5v14l11-7z';
+    const PAUSE_PATH   = 'M6 5h4v14H6zM14 5h4v14h-4z';
+    const SPEEDS       = [1, 1.25, 1.5, 2, 0.75];
+    let speedIdx       = 0;
+    let currentAudio   = null;
+
+    function playEpisodeObj(ep) {
+      if (!ep) return;
+      if (!ep.audioUrl) { window.open(ep.link, '_blank'); return; }
+      if (currentAudio !== ep.audioUrl) {
+        audioEl.src = ep.audioUrl;
+        currentAudio = ep.audioUrl;
+        document.getElementById('player-title').textContent = ep.title;
+        seekEl.value = 0; curEl.textContent = '0:00'; totalEl.textContent = fmtTime(parseDuration(ep.duration) || 0);
+      }
+      playerBar.classList.add('open');
+      document.body.classList.add('player-active');
+      audioEl.play().catch(() => {});
+    }
+    function playFromActive(idx) { playEpisodeObj(activeEpisodes[idx]); }
+
+    function setToggleIcon(paused) { toggleIcon.querySelector('path').setAttribute('d', paused ? PLAY_PATH : PAUSE_PATH); }
+
+    function refreshPlayingUI() {
+      const playing = currentAudio && !audioEl.paused;
+      document.querySelectorAll('.ep-play-btn').forEach(btn => {
+        const on = playing && btn.dataset.audio === currentAudio;
+        btn.classList.toggle('playing', on);
+        btn.innerHTML = on ? ICONS.play + ' מתנגן' : ICONS.play + ' נגן כאן';
+      });
+    }
+
+    document.getElementById('player-toggle').addEventListener('click', () => {
+      if (audioEl.paused) audioEl.play().catch(() => {}); else audioEl.pause();
+    });
+    audioEl.addEventListener('play',  () => { setToggleIcon(false); refreshPlayingUI(); });
+    audioEl.addEventListener('pause', () => { setToggleIcon(true);  refreshPlayingUI(); });
+    audioEl.addEventListener('loadedmetadata', () => { totalEl.textContent = fmtTime(audioEl.duration); });
+    audioEl.addEventListener('timeupdate', () => {
+      if (audioEl.duration) {
+        seekEl.value = (audioEl.currentTime / audioEl.duration) * 100;
+        curEl.textContent = fmtTime(audioEl.currentTime);
+      }
+    });
+    seekEl.addEventListener('input', () => {
+      if (audioEl.duration) audioEl.currentTime = (seekEl.value / 100) * audioEl.duration;
+    });
+    document.getElementById('player-speed').addEventListener('click', (e) => {
+      speedIdx = (speedIdx + 1) % SPEEDS.length;
+      audioEl.playbackRate = SPEEDS[speedIdx];
+      e.target.textContent = SPEEDS[speedIdx] + 'x';
+    });
+    document.getElementById('player-close').addEventListener('click', () => {
+      audioEl.pause();
+      playerBar.classList.remove('open');
+      document.body.classList.remove('player-active');
+    });
+
+    /* ══════════ SHARE / READ-MORE ══════════ */
+    function toggleShare(idx) {
+      const menu = document.getElementById('ep-share-' + idx);
+      if (menu) menu.classList.toggle('open');
+    }
+    function copyLink(url, btn) {
+      navigator.clipboard?.writeText(url).then(() => {
+        if (btn) { const o = btn.innerHTML; btn.innerHTML = '✓'; setTimeout(() => btn.innerHTML = o, 1200); }
+      }).catch(() => {});
+    }
+    function toggleReadMore(idx) {
+      const ep   = activeEpisodes[idx];
+      const desc = document.getElementById('ep-desc-' + idx);
+      const btn  = document.getElementById('ep-more-' + idx);
+      if (!ep || !desc) return;
+      const expanded = desc.classList.toggle('expanded');
+      desc.textContent = expanded ? ep.fullDesc : ep.desc + '…';
+      if (btn) btn.textContent = expanded ? 'הצג פחות ▴' : 'קרא עוד ▾';
+    }
+
+    /* ══════════ TOPIC FILTERS ══════════ */
+    const TOPICS = [
+      { label: 'הכל',            keys: null },
+      { label: 'ריבית ובנקים',   keys: ['ריבית', 'הפחת', 'בנק ישראל', 'הפד', 'פדרל', 'נגיד'] },
+      { label: 'שקל ומטבע',      keys: ['שקל', 'דולר', 'מטבע', 'שער החליפין'] },
+      { label: 'בורסה ומניות',   keys: ['בורסה', 'מניה', 'מניות', 'מדד', 'תל אביב', 'וול סטריט', 'נאסד', 'טאואר'] },
+      { label: 'אינפלציה',       keys: ['אינפלציה', 'מדד המחירים', 'יוקר המחיה'] },
+      { label: 'נדל״ן',          keys: ['נדל', 'דירות', 'דיור', 'משכנתא'] },
+      { label: 'בינה מלאכותית',  keys: ['בינה מלאכותית', ' ai', 'צ׳יפ', 'שבבים', 'אנבידיה', 'nvidia'] },
+      { label: 'גלובלי',         keys: ['ארה', 'אירופה', 'סין', 'עולמי', 'גלובל', 'טראמפ', 'מלחמה'] },
+    ];
+
+    function buildTopicFilters() {
+      const wrap = document.getElementById('topic-filters');
+      wrap.innerHTML = TOPICS.map((t, i) =>
+        `<button class="topic-chip${i === 0 ? ' active' : ''}" data-i="${i}">${t.label}</button>`
+      ).join('');
+      wrap.querySelectorAll('.topic-chip').forEach(chip => {
+        chip.addEventListener('click', () => applyTopic(+chip.dataset.i));
+      });
+    }
+    function resetTopicChips() {
+      document.querySelectorAll('.topic-chip').forEach((c, i) => c.classList.toggle('active', i === 0));
+    }
+    function applyTopic(i) {
+      const t = TOPICS[i];
+      document.querySelectorAll('.topic-chip').forEach((c, j) => c.classList.toggle('active', j === i));
+      // clear any active text search
+      const input = document.getElementById('episode-search');
+      input.value = '';
+      document.getElementById('search-clear').style.display = 'none';
+      document.querySelector('.search-icon').style.display = 'block';
+      const infoEl = document.getElementById('search-info');
+
+      if (!t.keys) {
+        activeEpisodes = allEpisodes;
+        infoEl.style.display = 'none';
+      } else {
+        activeEpisodes = allEpisodes.filter(ep => {
+          const hay = (ep.title + ' ' + (ep.fullDesc || ep.desc)).toLowerCase();
+          return t.keys.some(k => hay.includes(k.toLowerCase()));
+        });
+        infoEl.style.display = 'block';
+        infoEl.innerHTML = activeEpisodes.length
+          ? `נושא: <span>${t.label}</span> — נמצאו <span>${activeEpisodes.length}</span> פרקים`
+          : `לא נמצאו פרקים בנושא <span>${t.label}</span>`;
+      }
+      currentPage = 1;
+      renderPage(1);
+    }
+
+    /* ══════════ SCROLL ENTRANCE ANIMATIONS ══════════ */
+    (function initReveal() {
+      document.querySelectorAll(
+        '.hosts .section-inner, .episodes .section-inner, .platforms .section-inner, .stats-bar, .ranking-inner'
+      ).forEach(el => el.classList.add('reveal'));
+
+      const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(en => {
+          if (en.isIntersecting) { en.target.classList.add('visible'); obs.unobserve(en.target); }
+        });
+      }, { threshold: 0.1 });
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+    })();
 
     /* ── ACCESSIBILITY PANEL ── */
     const a11yBtn   = document.getElementById('a11y-btn');
@@ -1943,7 +2438,8 @@
       io.observe(el);
     }
 
-    observeCountUp(document.getElementById('episode-count'));
+    /* episode-count is animated from finish() → updateEpisodeCount()
+       once the real feed count is known (keeps a single animation). */
 
     /* ── ACTIVE NAV ON SCROLL ── */
     const sections = document.querySelectorAll('section[id], div[id]');

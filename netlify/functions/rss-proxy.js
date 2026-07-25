@@ -38,12 +38,16 @@ function extractItems(xml) {
     };
     const epMatch  = block.match(/<itunes:episode[^>]*>(\d+)<\/itunes:episode>/);
     const guidMatch = block.match(/<guid[^>]*>([^<]+)<\/guid>/);
+    const audioMatch = block.match(/<enclosure[^>]*url="([^"]+)"/);
+    const durMatch = block.match(/<itunes:duration[^>]*>([^<]+)<\/itunes:duration>/);
     items.push({
       title: get('title'),
       desc:  get('description') || get('itunes:summary') || '',
       date:  get('pubDate'),
       epNum: epMatch ? parseInt(epMatch[1]) : null,
       guid:  guidMatch ? guidMatch[1].trim() : null,
+      audioUrl: audioMatch ? audioMatch[1].replace(/&amp;/g, '&') : null,
+      duration: durMatch ? durMatch[1].trim() : null,
     });
   }
   return items;
@@ -79,6 +83,8 @@ exports.handler = async () => {
       desc:     item.desc,
       date:     item.date,
       epNum:    item.epNum,
+      audioUrl: item.audioUrl,
+      duration: item.duration,
       link:     appleMap.get(item.title.trim())
                 || 'https://podcasts.apple.com/il/podcast/id1340384819',
     }));
