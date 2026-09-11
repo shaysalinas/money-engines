@@ -914,41 +914,6 @@
       margin: 16px 0 40px;
     }
 
-    /* ── RANKING STRIP ── */
-    .ranking-strip {
-      background: #0f0f0f;
-      border-top: 1px solid #1e1e1e;
-      border-bottom: 1px solid #1e1e1e;
-      padding: 22px 24px;
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .ranking-inner {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .ranking-text {
-      font-size: 1rem;
-      font-weight: 700;
-      color: var(--white);
-      line-height: 1.5;
-      max-width: 680px;
-    }
-
-    .ranking-sub {
-      font-size: 0.8rem;
-      color: #666;
-      letter-spacing: 0.5px;
-    }
-
     /* ── PRIVACY MODAL ── */
     .modal-overlay {
       display: none;
@@ -1163,8 +1128,6 @@
       .pagination { gap: 5px; }
       .page-btn { width: 34px; height: 34px; font-size: 0.8rem; }
       .page-btn.nav-btn { padding: 0 10px; font-size: 0.78rem; }
-
-      .ranking-text { font-size: 0.9rem; }
 
       .modal-box { padding: 28px 20px; }
     }
@@ -1392,14 +1355,12 @@
       alt="מנועי הכסף"
     />
     <h1>מנועי <span>הכסף</span></h1>
-    <p style="font-size:0.95rem;color:#888;margin-bottom:16px;margin-top:-12px;letter-spacing:0.05em;">מאז 2018</p>
     <p class="hero-description">
       הפודקאסט הכלכלי המוביל מבית כלכליסט. שי סלינס ואורי גרינפלד מנתחים
-      את שוקי הון, כלכלה גלובלית ומה שמניע את הכסף —
-      בעברית, בגובה העיניים.
+      את שוקי הון, כלכלה גלובלית ומה שמניע את הכסף — בעברית.
     </p>
     <div class="hero-tagline-divider" aria-hidden="true"></div>
-    <p class="hero-tagline">בלי אג׳נדה - רק כלכלה</p>
+    <p class="hero-tagline">כלכלה בגובה העיניים - מאז 2018</p>
     <div class="cta-group">
       <a href="#platforms" class="btn btn-primary">
         <span>🎧</span> האזינו עכשיו
@@ -1410,23 +1371,13 @@
   <!-- STATS BAR -->
   <div class="stats-bar">
     <div class="stat">
-      <div class="stat-num" id="episode-count">+380</div>
+      <div class="stat-num" id="episode-count">+390</div>
       <div class="stat-label">פרקים שבועיים</div>
     </div>
     <div class="stat">
       <div class="stat-num">מעל ל-70K</div>
       <div class="stat-label">האזנות בחודש</div>
     </div>
-  </div>
-
-  <!-- RANKING STRIP -->
-  <div class="ranking-strip">
-    <div class="ranking-inner">
-      <div class="ranking-text">
-        ״הפודקאסט הכלכלי הישראלי שמדורג מס׳ 1 בעסקים ובין 20 המובילים בדירוג הכללי — בכל שבוע כשיוצא פרק חדש״
-      </div>
-    </div>
-    <div class="ranking-sub">Apple Podcasts ישראל</div>
   </div>
 
   <!-- FEATURED LATEST EPISODE -->
@@ -2154,7 +2105,7 @@
     /* ══════════ SCROLL ENTRANCE ANIMATIONS ══════════ */
     (function initReveal() {
       document.querySelectorAll(
-        '.hosts .section-inner, .episodes .section-inner, .platforms .section-inner, .stats-bar, .ranking-inner'
+        '.hosts .section-inner, .episodes .section-inner, .platforms .section-inner, .stats-bar'
       ).forEach(el => el.classList.add('reveal'));
 
       const io = new IntersectionObserver((entries, obs) => {
